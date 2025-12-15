@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Mesures Screens - Leclercq Décoration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0066CC;
+            --primary-dark: #0052A3;
+            --success: #28A745;
+            --warning: #FFC107;
+            --danger: #DC3545;
+            --background: #F8F9FA;
+            --surface: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #6C757D;
+            --border: #DEE2E6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        .container { max-width: 600px; margin: 0 auto; min-height: 100vh; }
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        .header h1 { font-size: 22px; margin-bottom: 4px; }
+        .header p { font-size: 13px; opacity: 0.9; }
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            height: 4px;
+            border-radius: 2px;
+            margin-top: 12px;
+        }
+        .progress-fill {
+            background: white;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .content { padding: 20px; }
+        .step { display: none; animation: fadeIn 0.3s; }
+        .step.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+        .step-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; color: var(--primary); }
+        .step-subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,102,204,0.1);
+        }
+        textarea { resize: vertical; min-height: 100px; }
+        .radio-group { display: flex; flex-direction: column; gap: 12px; }
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .radio-option:hover { border-color: var(--primary); background: rgba(0,102,204,0.02); }
+        .radio-option.selected { border-color: var(--primary); background: rgba(0,102,204,0.05); }
+        .radio-option input { width: 20px; height: 20px; margin-right: 12px; cursor: pointer; }
+        .radio-option label { cursor: pointer; margin: 0; flex: 1; font-weight: 500; }
+        .dimension-input-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .input-with-unit { position: relative; }
+        .input-with-unit input { padding-right: 45px; }
+        .unit-label {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .calculation-result {
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        .calculation-result h4 {
+            color: var(--success);
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .calculation-result p { font-size: 15px; margin: 4px 0; }
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 16px 0;
+            font-size: 14px;
+            display: flex;
+            gap: 12px;
+        }
+        .alert-warning {
+            background: #FFF3CD;
+            border-left: 4px solid var(--warning);
+            color: #856404;
+        }
+        .alert-info {
+            background: #D1ECF1;
+            border-left: 4px solid #17A2B8;
+            color: #0C5460;
+        }
+        .schema-container {
+            background: #F8F9FA;
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 16px 0;
+            text-align: center;
+        }
+        .schema-svg { max-width: 100%; height: auto; }
+        .button-group { display: flex; gap: 12px; margin-top: 24px; }
+        .btn {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-secondary { background: var(--border); color: var(--text-primary); }
+        .btn-secondary:hover { background: #CED4DA; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #218838; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .photo-upload {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .photo-upload:hover { border-color: var(--primary); }
+        .photo-upload input { display: none; }
+        .photo-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .photo-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .photo-item img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-remove {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        .summary-section {
+            background: var(--surface);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .summary-section h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .summary-row:last-child { border-bottom: none; }
+        .summary-label { font-weight: 500; color: var(--text-secondary); font-size: 14px; }
+        .summary-value { font-weight: 600; text-align: right; font-size: 14px; }
+        .store-item {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        .store-item h4 { font-size: 16px; color: var(--primary); margin-bottom: 8px; }
+        .store-item p { font-size: 14px; margin: 4px 0; }
+        .store-remove {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .export-buttons { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+        .btn-export {
+            padding: 16px;
+            border-radius: 8px;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+        .btn-export:hover { background: var(--primary); color: white; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📏 Mesures Screens</h1>
+            <p>Leclercq Décoration</p>
+            <div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
+        </div>
+        <div class="content" id="app"></div>
+    </div>
+    <script>
+        let step = 1, data = {}, photos = [], stores = [];
+        
+        function render() {
+            const app = document.getElementById('app');
+            app.innerHTML = getStepHTML();
+            document.getElementById('progressBar').style.width = (step/11*100)+'%';
+            attachStepListeners();
+        }
+        
+        function getStepHTML() {
+            if(step === 1) return `
+                <div class="card">
+                    <h2 class="step-title">1. Identification</h2>
+                    <div class="form-group">
+                        <label>Référence produit *</label>
+                        <select id="productRef">
+                            <option value="">-- Choisir --</option>
+                            <optgroup label="Smart 85">
+                                <option>Smart 85 - Biseauté</option>
+                                <option>Smart 85 - Carré</option>
+                                <option>Smart 85 - Quart de rond</option>
+                            </optgroup>
+                            <optgroup label="Smart 100">
+                                <option>Smart 100 - Biseauté</option>
+                                <option>Smart 100 - Carré</option>
+                                <option>Smart 100 - Quart de rond</option>
+                                <option>Smart 100 - Arc</option>
+                            </optgroup>
+                            <optgroup label="Smart 130">
+                                <option>Smart 130 - Biseauté</option>
+                                <option>Smart 130 - Carré</option>
+                                <option>Smart 130 - Quart de rond</option>
+                                <option>Smart 130 - Arc</option>
+                                <option>Smart 130 - RK Carré</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nom de la pièce *</label>
+                        <input type="text" id="roomName" placeholder="Ex: Terrasse">
+                    </div>
+                    <div class="form-group">
+                        <label>Nom du client (optionnel)</label>
+                        <input type="text" id="clientName">
+                    </div>
+                    <div class="form-group">
+                        <label>Adresse (optionnel)</label>
+                        <input type="text" id="clientAddress">
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="save();step=2;render()">Suivant →</button>
+                </div>
+            `;
+            
+            if(step === 2) return `
+                <div class="card">
+                    <h2 class="step-title">2. Type de mesure</h2>
+                    <div class="radio-group">
+                        <div class="radio-option" onclick="data.measureType='niche';render()">
+                            <input type="radio" name="mt" ${data.measureType==='niche'?'checked':''}>
+                            <label><strong>La niche existante</strong></label>
+                        </div>
+                        <div class="radio-option" onclick="data.measureType='finished';render()">
+                            <input type="radio" name="mt" ${data.measureType==='finished'?'checked':''}>
+                            <label><strong>Les dimensions finies souhaitées</strong></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=1;render()">← Retour</button>
+                    <button class="btn btn-primary" onclick="step=data.measureType==='finished'?4:3;render()" ${!data.measureType?'disabled':''}>Suivant →</button>
+                </div>
+            `;
+            
+            if(step === 3) return `
+                <div class="card">
+                    <h2 class="step-title">3. Mode de pose</h2>
+                    <div class="radio-group">
+                        <div class="radio-option" onclick="data.poseMode='dans';render()">
+                            <input type="radio" name="pm" ${data.poseMode==='dans'?'checked':''}>
+                            <label><strong>DANS LE TROU (encastré)</strong></label>
+                        </div>
+                        <div class="radio-option" onclick="data.poseMode='bord';if(!data.fleur)data.fleur='oui';render()">
+                            <input type="radio" name="pm" ${data.poseMode==='bord'?'checked':''}>
+                            <label><strong>AU BORD DU TROU (applique)</strong></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=2;render()">← Retour</button>
+                    <button class="btn btn-primary" onclick="step=data.poseMode==='bord'?3.5:4;render()" ${!data.poseMode?'disabled':''}>Suivant →</button>
+                </div>
+            `;
+            
+            if(step === 3.5) return `
+                <div class="card">
+                    <h2 class="step-title">3b. Coulisses</h2>
+                    <div class="alert alert-info">
+                        <span class="alert-icon">ℹ️</span>
+                        <div><strong>Hors baie :</strong> La hauteur du caisson sera automatiquement ajoutée à la hauteur finale (Smart 85: 90mm, Smart 100: 105mm, Smart 130: 130mm, Smart 150: 150mm)</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Position *</label>
+                        <select id="coulissePos">
+                            <option value="">-- Choisir --</option>
+                            <option value="aucune" ${data.coulissePos==='aucune'?'selected':''}>Largeur finie (pas de coulisse)</option>
+                            <option value="G" ${data.coulissePos==='G'?'selected':''}>Gauche (450 + G)</option>
+                            <option value="D" ${data.coulissePos==='D'?'selected':''}>Droite (450 + D)</option>
+                            <option value="G+D" ${data.coulissePos==='G+D'?'selected':''}>Les 2 côtés (450 + G+D)</option>
+                        </select>
+                    </div>
+                    ${data.coulissePos && data.coulissePos!=='aucune'?`
+                    <div class="form-group">
+                        <label>Type de coulisse *</label>
+                        <select id="coulisseType">
+                            <option value="">-- Choisir --</option>
+                            <option value="27" ${data.coulisseWidth==='27'?'selected':''}>STG-S* (27mm)</option>
+                            <option value="45" ${data.coulisseWidth==='45'?'selected':''}>STG (45mm)</option>
+                            <option value="40" ${data.coulisseWidth==='40'?'selected':''}>MSTG (40mm)</option>
+                            <option value="56" ${data.coulisseWidth==='56'?'selected':''}>MSTG-S (56mm)</option>
+                            <option value="68.5" ${data.coulisseWidth==='68.5'?'selected':''}>STG-Click (68.5mm)</option>
+                        </select>
+                    </div>
+                    `:''}
+                    <div class="form-group">
+                        <label>À fleur de la niche ?</label>
+                        <select id="fleur">
+                            <option value="oui" ${data.fleur==='oui' || !data.fleur?'selected':''}>Oui, à fleur (pas de jeu)</option>
+                            <option value="non" ${data.fleur==='non'?'selected':''}>Non, avec jeu</option>
+                        </select>
+                    </div>
+                    ${data.fleur==='non'?`
+                    <p class="step-subtitle" style="margin-bottom:16px">Les jeux seront <strong style="color:var(--success)">AJOUTÉS (+)</strong> aux dimensions mesurées</p>
+                    <div class="form-group">
+                        <label>Jeu en largeur (mm) *</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="jeuBordLargeur" placeholder="10" value="${data.jeuBordLargeur||''}">
+                            <span class="unit-label" style="color:var(--success);font-weight:bold;">+ mm</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Jeu en hauteur (mm) *</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="jeuBordHauteur" placeholder="10" value="${data.jeuBordHauteur||''}">
+                            <span class="unit-label" style="color:var(--success);font-weight:bold;">+ mm</span>
+                        </div>
+                    </div>
+                    `:''}
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=3;render()">← Retour</button>
+                    <button class="btn btn-primary" onclick="save();step=4;render()">Suivant →</button>
+                </div>
+            `;
+            
+            if(step === 4) return `
+                <div class="card">
+                    <h2 class="step-title">4. Dimensions</h2>
+                    <div class="dimension-input-group">
+                        <div class="form-group">
+                            <label>Largeur *</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="largeur" step="1" value="${data.largeur||''}">
+                                <span class="unit-label">mm</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Hauteur *</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="hauteur" step="1" value="${data.hauteur||''}">
+                                <span class="unit-label">mm</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=${data.poseMode==='bord'?3.5:data.measureType==='finished'?2:3};render()">← Retour</button>
+                    <button class="btn btn-primary" onclick="save();if(data.poseMode==='bord')calcDims();step=${data.poseMode==='bord'?6:5};render()">Suivant →</button>
+                </div>
+            `;
+            
+            if(step === 5) return `
+                <div class="card">
+                    <h2 class="step-title">5. Jeux</h2>
+                    <p class="step-subtitle">Les jeux seront <strong style="color:var(--danger)">DÉDUITS (-)</strong> des dimensions mesurées</p>
+                    <div class="form-group">
+                        <label>Jeu en largeur (mm) *</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="jeuLargeur" value="5">
+                            <span class="unit-label" style="color:var(--danger);font-weight:bold;">- mm</span>
+                        </div>
+                        <small style="color: var(--text-secondary); display: block; margin-top: 4px;">
+                            Recommandé: 5 mm au total (sera déduit de la largeur)
+                        </small>
+                    </div>
+                    <div class="form-group">
+                        <label>Jeu en hauteur (mm) *</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="jeuHauteur" value="5">
+                            <span class="unit-label" style="color:var(--danger);font-weight:bold;">- mm</span>
+                        </div>
+                        <small style="color: var(--text-secondary); display: block; margin-top: 4px;">
+                            Recommandé: 5 mm au total (sera déduit de la hauteur)
+                        </small>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=4;render()">← Retour</button>
+                    <button class="btn btn-primary" onclick="save();calcDims();step=6;render()">Suivant →</button>
+                </div>
+            `;
+            
+            if(step === 6) return `
+                <div class="card">
+                    <h2 class="step-title">6. Motorisation</h2>
+                    <div class="form-group">
+                        <label>Type de moteur *</label>
+                        <select id="moteur">
+                            <option value="">-- Choisir --</option>
+                            <option>io</option>
+                            <option>RTS</option>
+                            <option>Solaire</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Sortie de câble *</label>
+                        <select id="sortieCable">
+                            <option value="">-- Choisir --</option>
+                            <option value="N">N - Haut gauche</option>
+                            <option value="P">P - Haut centre gauche</option>
+                            <option value="Z">Z - Bas</option>
+                            <option value="J">J - Bas centre gauche</option>
+                            <option value="O">O - Haut droite</option>
+                            <option value="M">M - Haut centre droit</option>
+                            <option value="W">W - Bas centre droit</option>
+                            <option value="E">E - Haut centre gauche (int)</option>
+                            <option value="G">G - Bas gauche (int)</option>
+                            <option value="C">C - Bas centre gauche (int)</option>
+                            <option value="F">F - Haut droite (int)</option>
+                            <option value="D">D - Bas droite (int)</option>
+                            <option value="H">H - Bas centre droit (int)</option>
+                            <option value="K">K - Gauche milieu (int)</option>
+                            <option value="T">T - Droite milieu (int)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=${data.poseMode==='bord'?4:5};render()">← Retour</button>
+                    <button class="btn btn-primary" onclick="save();step=7;render()">Suivant →</button>
+                </div>
+            `;
+            
+            if(step === 7) return `
+                <div class="card">
+                    <h2 class="step-title">7. Finitions</h2>
+                    <div class="form-group">
+                        <label>Couleur *</label>
+                        <select id="couleur" onchange="data.couleur=this.value;render()">
+                            <option value="">-- Choisir --</option>
+                            <optgroup label="RAL Standard">
+                                <option value="RAL 9001 Blanc crème" ${data.couleur==='RAL 9001 Blanc crème'?'selected':''}>RAL 9001 Blanc crème</option>
+                                <option value="RAL 9010 Blanc" ${data.couleur==='RAL 9010 Blanc'?'selected':''}>RAL 9010 Blanc</option>
+                                <option value="RAL 9016 Blanc Traffic" ${data.couleur==='RAL 9016 Blanc Traffic'?'selected':''}>RAL 9016 Blanc Traffic</option>
+                                <option value="Argent Technique (Anodisé)" ${data.couleur==='Argent Technique (Anodisé)'?'selected':''}>Argent Technique (Anodisé)</option>
+                                <option value="RAL 7016 Gris anthracite" ${data.couleur==='RAL 7016 Gris anthracite'?'selected':''}>RAL 7016 Gris anthracite</option>
+                                <option value="RAL 8019 Brun" ${data.couleur==='RAL 8019 Brun'?'selected':''}>RAL 8019 Brun</option>
+                                <option value="RAL 7039 Gris quartz" ${data.couleur==='RAL 7039 Gris quartz'?'selected':''}>RAL 7039 Gris quartz</option>
+                            </optgroup>
+                            <optgroup label="Laque structurée (+20%)">
+                                <option value="STR 7S16 Gris anthracite" ${data.couleur==='STR 7S16 Gris anthracite'?'selected':''}>STR 7S16 Gris anthracite</option>
+                                <option value="STR 9S07 Gris aluminium" ${data.couleur==='STR 9S07 Gris aluminium'?'selected':''}>STR 9S07 Gris aluminium</option>
+                                <option value="STR 7S39 Gris quartz" ${data.couleur==='STR 7S39 Gris quartz'?'selected':''}>STR 7S39 Gris quartz</option>
+                                <option value="STR 9S06 Aluminium naturel" ${data.couleur==='STR 9S06 Aluminium naturel'?'selected':''}>STR 9S06 Aluminium naturel</option>
+                                <option value="Tiger 29/80081 Iron Glimmer" ${data.couleur==='Tiger 29/80081 Iron Glimmer'?'selected':''}>Tiger 29/80081 Iron Glimmer</option>
+                                <option value="STR 9S05 Noir" ${data.couleur==='STR 9S05 Noir'?'selected':''}>STR 9S05 Noir</option>
+                            </optgroup>
+                            <optgroup label="Autre">
+                                <option value="Autre RAL" ${data.couleur==='Autre RAL'?'selected':''}>Autre RAL (+15%)</option>
+                                <option value="RAL métallique" ${data.couleur==='RAL métallique'?'selected':''}>RAL métallique (+20%)</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    ${data.couleur==='Autre RAL' || data.couleur==='RAL métallique'?`
+                    <div class="form-group">
+                        <label>Code RAL *</label>
+                        <input type="text" id="autreRAL" placeholder="Ex: RAL 7016" value="${data.autreRAL||''}">
+                    </div>
+                    `:''}
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=6;render()">← Retour</button>
+                    <button class="btn btn-primary" onclick="save();step=8;render()">Suivant →</button>
+                </div>
+            `;
+            
+            if(step === 8) return `
+                <div class="card">
+                    <h2 class="step-title">8. Toile</h2>
+                    <div class="form-group">
+                        <label>Type *</label>
+                        <select id="toileType">
+                            <option>Serge 600 OF 5% (standard)</option>
+                            <option>Serge Ferrari Soltis 86</option>
+                            <option>Helioscreen Serge OF 3%</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Référence</label>
+                        <input type="text" id="toileRef" placeholder="5500-0220">
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=7;render()">← Retour</button>
+                    <button class="btn btn-primary" onclick="save();step=9;render()">Suivant →</button>
+                </div>
+            `;
+            
+            if(step === 9) return `
+                <div class="card">
+                    <h2 class="step-title">9. Télécommande</h2>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <input type="text" id="teleType" placeholder="Somfy Situo">
+                    </div>
+                    <div class="form-group">
+                        <label>Quantité</label>
+                        <input type="number" id="teleQty" value="1">
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=8;render()">← Retour</button>
+                    <button class="btn btn-primary" onclick="save();step=10;render()">Suivant →</button>
+                </div>
+            `;
+            
+            if(step === 10) return `
+                <div class="card">
+                    <h2 class="step-title">10. Photos et remarques</h2>
+                    <div class="form-group">
+                        <label>Photos</label>
+                        <div class="photo-upload" onclick="document.getElementById('photoInput').click()">
+                            <input type="file" id="photoInput" accept="image/*" multiple onchange="addPhotos(event)">
+                            <p style="font-size:48px">📷</p>
+                            <p>Ajouter des photos</p>
+                        </div>
+                        <div class="photo-preview" id="photoPreview"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Remarques</label>
+                        <textarea id="remarques"></textarea>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=9;render()">← Retour</button>
+                    <button class="btn btn-primary" onclick="save();step=11;render()">Récapitulatif →</button>
+                </div>
+            `;
+            
+            if(step === 11) return `
+                <div class="card">
+                    <h2 class="step-title">✓ Checklist de vérification</h2>
+                    <p class="step-subtitle">Vérifiez ces points importants avant de finaliser</p>
+                    
+                    <div class="form-group">
+                        <div style="background:#f8f9fa;padding:16px;border-radius:8px;margin-bottom:12px">
+                            <label style="display:flex;align-items:center;cursor:pointer;margin:0">
+                                <input type="checkbox" id="check1" style="width:20px;height:20px;margin-right:12px" onchange="data.check1=this.checked">
+                                <span style="flex:1;font-weight:500">✅ Accessibilité facile pour l'installation ?</span>
+                            </label>
+                        </div>
+                        
+                        <div style="background:#f8f9fa;padding:16px;border-radius:8px;margin-bottom:12px">
+                            <label style="display:flex;align-items:center;cursor:pointer;margin:0">
+                                <input type="checkbox" id="check2" style="width:20px;height:20px;margin-right:12px" onchange="data.check2=this.checked">
+                                <span style="flex:1;font-weight:500">🚪 Pas de poignée ou obstacle gênant ?</span>
+                            </label>
+                        </div>
+                        
+                        <div style="background:#f8f9fa;padding:16px;border-radius:8px;margin-bottom:12px">
+                            <label style="display:flex;align-items:center;cursor:pointer;margin:0">
+                                <input type="checkbox" id="check3" style="width:20px;height:20px;margin-right:12px" onchange="data.check3=this.checked">
+                                <span style="flex:1;font-weight:500">📦 Le store passe dans couloir / ascenseur ?</span>
+                            </label>
+                        </div>
+                        
+                        <div style="background:#f8f9fa;padding:16px;border-radius:8px;margin-bottom:12px">
+                            <label style="display:flex;align-items:center;cursor:pointer;margin:0">
+                                <input type="checkbox" id="check4" style="width:20px;height:20px;margin-right:12px" onchange="data.check4=this.checked">
+                                <span style="flex:1;font-weight:500">🔧 Matériel à prévoir vérifié ?</span>
+                            </label>
+                        </div>
+                        
+                        <div style="background:#f8f9fa;padding:16px;border-radius:8px;margin-bottom:12px">
+                            <label style="display:flex;align-items:center;cursor:pointer;margin:0">
+                                <input type="checkbox" id="check5" style="width:20px;height:20px;margin-right:12px" onchange="data.check5=this.checked">
+                                <span style="flex:1;font-weight:500">⚡ Câblage électrique simple et accessible ?</span>
+                            </label>
+                        </div>
+                        
+                        <div style="background:#f8f9fa;padding:16px;border-radius:8px;margin-bottom:12px">
+                            <label style="display:flex;align-items:center;cursor:pointer;margin:0">
+                                <input type="checkbox" id="check6" style="width:20px;height:20px;margin-right:12px" onchange="data.check6=this.checked">
+                                <span style="flex:1;font-weight:500">📏 Si dépassement sur fenêtre : client prévenu ?</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Autres particularités ou remarques</label>
+                        <textarea id="checklistRemarks" oninput="data.checklistRemarks=this.value" placeholder="Notez ici toute autre particularité importante...">${data.checklistRemarks||''}</textarea>
+                    </div>
+                    
+                    <div class="alert alert-warning" style="margin-top:16px">
+                        <span class="alert-icon">⚠️</span>
+                        <div><strong>Important :</strong> Assurez-vous d'avoir vérifié tous les points avant de continuer.</div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=10;render()">← Retour</button>
+                    <button class="btn btn-primary" onclick="save();step=12;render()">Continuer vers le récapitulatif →</button>
+                </div>
+            `;
+            
+            if(step === 13) return `
+                <div class="card">
+                    <h2 class="step-title">✓ Récapitulatif</h2>
+                    ${getSummary()}
+                </div>
+                <div class="card">
+                    <h3>📋 Stores du projet (${stores.length + 1})</h3>
+                    <!-- Store principal -->
+                    <div class="store-item">
+                        <h4>Store 1 : ${data.roomName}</h4>
+                        <p><strong>Dimensions:</strong> ${data.largeurFinie} x ${data.hauteurFinie} cm</p>
+                        <p style="font-size:12px;color:var(--text-secondary);margin-top:4px">
+                            ${data.poseMode==='bord'?
+                                (() => {
+                                    const l = parseFloat(data.largeur||0);
+                                    const jeuL = parseFloat(data.jeuBordLargeur||0);
+                                    const jeuH = parseFloat(data.jeuBordHauteur||0);
+                                    const coul = parseFloat(data.coulisseWidth||0);
+                                    const pos = data.coulissePos || 'aucune';
+                                    let detailL = '📐 L: ' + l + 'mm + ' + jeuL + 'mm';
+                                    if(pos === 'G' || pos === 'D') detailL += ' + ' + coul + 'mm coulisse';
+                                    else if(pos === 'G+D') detailL += ' + ' + (coul*2) + 'mm coulisses';
+                                    detailL += ' = ' + data.largeurFinie + 'cm';
+                                    return detailL + '<br>📏 H: ' + data.hauteur + 'mm + ' + jeuH + 'mm + ' + (data.caissonHeight||90) + 'mm caisson = ' + data.hauteurFinie + 'cm';
+                                })()
+                                :
+                                `📐 L: ${data.largeur}mm - ${data.jeuLargeur||5}mm = ${data.largeurFinie}cm<br>
+                                 📏 H: ${data.hauteur}mm - ${data.jeuHauteur||5}mm = ${data.hauteurFinie}cm`
+                            }
+                        </p>
+                        <p><strong>Mode:</strong> ${data.poseMode==='dans'?'Dans le trou':'Sur le jour'}</p>
+                        ${data.notation?`<p><strong>Notation:</strong> ${data.notation}</p>`:''}
+                        <p><strong>Sortie:</strong> ${data.sortieCable}</p>
+                        <p style="margin-top:8px"><strong>Quantité:</strong> 
+                            <input type="number" min="1" value="${data.qty||1}" style="width:60px;padding:4px;border:1px solid #ddd;border-radius:4px" 
+                            onchange="data.qty=parseInt(this.value)">
+                        </p>
+                    </div>
+                    ${stores.length>0?stores.map((s,i)=>`
+                    <div class="store-item">
+                        <button class="store-remove" onclick="stores.splice(${i},1);render()">×</button>
+                        <h4>Store ${i+2} : ${s.roomName}</h4>
+                        <p><strong>Dimensions:</strong> ${s.largeurFinie} x ${s.hauteurFinie} cm</p>
+                        <p style="font-size:12px;color:var(--text-secondary);margin-top:4px">
+                            ${s.poseMode==='bord'?
+                                (() => {
+                                    const coul = parseFloat(s.coulisseWidth||0);
+                                    const pos = s.coulissePos || 'aucune';
+                                    let detailL = '📐 L: ' + s.largeurMesuree + 'mm + ' + (s.jeuBordL||0) + 'mm';
+                                    if(pos === 'G' || pos === 'D') detailL += ' + ' + coul + 'mm coulisse';
+                                    else if(pos === 'G+D') detailL += ' + ' + (coul*2) + 'mm coulisses';
+                                    detailL += ' = ' + s.largeurFinie + 'cm';
+                                    return detailL + '<br>📏 H: ' + s.hauteurMesuree + 'mm + ' + (s.jeuBordH||0) + 'mm + ' + (s.caissonHeight||90) + 'mm caisson = ' + s.hauteurFinie + 'cm';
+                                })()
+                                :
+                                `📐 L: ${s.largeurMesuree}mm - ${s.jeuL||5}mm = ${s.largeurFinie}cm<br>
+                                 📏 H: ${s.hauteurMesuree}mm - ${s.jeuH||5}mm = ${s.hauteurFinie}cm`
+                            }
+                        </p>
+                        <p><strong>Mode:</strong> ${s.poseMode==='dans'?'Dans le trou':'Sur le jour'}</p>
+                        ${s.notation?`<p><strong>Notation:</strong> ${s.notation}</p>`:''}
+                        <p><strong>Sortie:</strong> ${s.sortieCable}</p>
+                        ${s.comment?`<p style="margin-top:8px"><strong>Commentaire:</strong> ${s.comment}</p>`:''}
+                        ${s.photos && s.photos.length>0?`<p><strong>Photos:</strong> ${s.photos.length} photo(s)</p>`:''}
+                        <p style="margin-top:8px"><strong>Quantité:</strong> 
+                            <input type="number" min="1" value="${s.qty||1}" style="width:60px;padding:4px;border:1px solid #ddd;border-radius:4px" 
+                            onchange="stores[${i}].qty=parseInt(this.value);render()">
+                        </p>
+                    </div>
+                    `).join(''):''}
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-success" onclick="if(!data.storeCoulissePos)data.storeCoulissePos='aucune';step=13;render()">+ Ajouter un store</button>
+                </div>
+                <div class="export-buttons">
+                    <button class="btn-export" onclick="exportTxt()">📋 Copier</button>
+                    <button class="btn-export" onclick="downloadTxt()">💾 Télécharger</button>
+                </div>
+                <div class="button-group" style="margin-top:24px">
+                    <button class="btn btn-secondary" onclick="step=11;render()">← Retour à la checklist</button>
+                    <button class="btn btn-primary" onclick="reset()">Nouveau relevé</button>
+                </div>
+            `;
+            
+            if(step === 13) return `
+                <div class="card">
+                    <h2 class="step-title">+ Nouveau store</h2>
+                    <div class="form-group">
+                        <label>Pièce *</label>
+                        <input type="text" id="storeRoom" value="${data.storeRoom||''}" oninput="data.storeRoom=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label>Mode de pose *</label>
+                        <select id="storePoseMode">
+                            <option value="">-- Choisir --</option>
+                            <option value="dans" ${data.storePoseMode==='dans'?'selected':''}>Dans le trou (encastré)</option>
+                            <option value="bord" ${data.storePoseMode==='bord'?'selected':''}>Sur le jour (applique)</option>
+                        </select>
+                    </div>
+                    ${data.storePoseMode==='bord'?`
+                    <div class="alert alert-info" style="margin-top:12px">
+                        <span class="alert-icon">ℹ️</span>
+                        <div><strong>Hors baie :</strong> La hauteur du caisson sera automatiquement ajoutée</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Coulisses</label>
+                        <select id="storeCoulissePos">
+                            <option value="aucune" ${data.storeCoulissePos==='aucune' || !data.storeCoulissePos?'selected':''}>Largeur finie (pas de coulisse)</option>
+                            <option value="G" ${data.storeCoulissePos==='G'?'selected':''}>Gauche (+ G)</option>
+                            <option value="D" ${data.storeCoulissePos==='D'?'selected':''}>Droite (+ D)</option>
+                            <option value="G+D" ${data.storeCoulissePos==='G+D'?'selected':''}>Les 2 côtés (+ G+D)</option>
+                        </select>
+                    </div>
+                    ${data.storeCoulissePos && data.storeCoulissePos!=='aucune'?`
+                    <div class="form-group">
+                        <label>Type de coulisse</label>
+                        <select id="storeCoulisseWidth">
+                            <option value="27" ${data.storeCoulisseWidth==='27'?'selected':''}>STG-S* (27mm)</option>
+                            <option value="45" ${data.storeCoulisseWidth==='45' || !data.storeCoulisseWidth?'selected':''}>STG (45mm)</option>
+                            <option value="40" ${data.storeCoulisseWidth==='40'?'selected':''}>MSTG (40mm)</option>
+                            <option value="56" ${data.storeCoulisseWidth==='56'?'selected':''}>MSTG-S (56mm)</option>
+                        </select>
+                    </div>
+                    `:''}
+                    <div class="form-group">
+                        <label>Jeu en largeur (mm)</label>
+                        <input type="number" id="storeBordJeuL" value="10" placeholder="0 si à fleur">
+                    </div>
+                    <div class="form-group">
+                        <label>Jeu en hauteur (mm)</label>
+                        <input type="number" id="storeBordJeuH" value="10" placeholder="0 si à fleur">
+                    </div>
+                    `:''}
+                    <div class="dimension-input-group">
+                        <div class="form-group">
+                            <label>Largeur *</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="storeLarg" step="1" value="${data.storeLarg||''}" oninput="data.storeLarg=this.value" placeholder="4500">
+                                <span class="unit-label">mm</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Hauteur *</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="storeHaut" step="1" value="${data.storeHaut||''}" oninput="data.storeHaut=this.value" placeholder="2800">
+                                <span class="unit-label">mm</span>
+                            </div>
+                        </div>
+                    </div>
+                    ${data.storePoseMode==='dans'?`
+                    <div class="dimension-input-group">
+                        <div class="form-group">
+                            <label>Jeu largeur (mm)</label>
+                            <input type="number" id="storeJeuL" value="${data.storeJeuL||'5'}" oninput="data.storeJeuL=this.value">
+                        </div>
+                        <div class="form-group">
+                            <label>Jeu hauteur (mm)</label>
+                            <input type="number" id="storeJeuH" value="${data.storeJeuH||'5'}" oninput="data.storeJeuH=this.value">
+                        </div>
+                    </div>
+                    `:''}
+                    <div class="form-group">
+                        <label>Sortie câble *</label>
+                        <select id="storeSortie">
+                            <option value="">-- Choisir --</option>
+                            <option value="N">N - Haut gauche</option>
+                            <option value="P">P - Haut centre gauche</option>
+                            <option value="Z">Z - Bas</option>
+                            <option value="J">J - Bas centre gauche</option>
+                            <option value="O">O - Haut droite</option>
+                            <option value="M">M - Haut centre droit</option>
+                            <option value="W">W - Bas centre droit</option>
+                            <option value="E">E - Haut centre gauche (int)</option>
+                            <option value="G">G - Bas gauche (int)</option>
+                            <option value="C">C - Bas centre gauche (int)</option>
+                            <option value="F">F - Haut droite (int)</option>
+                            <option value="D">D - Bas droite (int)</option>
+                            <option value="H">H - Bas centre droit (int)</option>
+                            <option value="K">K - Gauche milieu (int)</option>
+                            <option value="T">T - Droite milieu (int)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantité</label>
+                        <input type="number" id="storeQty" value="1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Commentaire pour ce store</label>
+                        <textarea id="storeComment" oninput="data.storeComment=this.value" placeholder="Remarques spécifiques à ce store...">${data.storeComment||''}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Photos pour ce store</label>
+                        <div class="photo-upload" onclick="document.getElementById('storePhotoInput').click()">
+                            <input type="file" id="storePhotoInput" accept="image/*" multiple onchange="addStorePhotos(event)">
+                            <p style="font-size:32px">📷</p>
+                            <p>Ajouter des photos</p>
+                        </div>
+                        <div class="photo-preview" id="storePhotoPreview"></div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=12;render()">Annuler</button>
+                    <button class="btn btn-primary" onclick="addStore()">Enregistrer</button>
+                </div>
+            `;
+        }
+        
+        function save() {
+            ['productRef','roomName','clientName','clientAddress','largeur','hauteur',
+             'jeuLargeur','jeuHauteur','moteur','sortieCable','couleur','autreRAL',
+             'toileType','toileRef','teleType','teleQty','remarques','coulissePos',
+             'coulisseWidth','fleur','jeuBordLargeur','jeuBordHauteur'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) data[id] = el.value;
+            });
+        }
+        
+
+        function getCaissonHeight() {
+            const product = data.productRef || '';
+            if(product.includes('Smart 85')) return 90;
+            if(product.includes('Smart 100')) return 105;
+            if(product.includes('Smart 130')) return 130;
+            if(product.includes('Smart 150')) return 150;
+            return 90; // par défaut
+        }
+
+        function calcDims() {
+            const l = parseFloat(data.largeur); // en mm
+            const h = parseFloat(data.hauteur); // en mm
+            
+            let largeurFinale, hauteurFinale;
+            
+            if(data.poseMode === 'bord') {
+                // HORS BAIE : AJOUTER les jeux et le caisson
+                const jlBord = parseFloat(data.jeuBordLargeur||0); // en mm
+                const jhBord = parseFloat(data.jeuBordHauteur||0); // en mm
+                const caissonHeight = getCaissonHeight();
+                const coulisseWidth = parseFloat(data.coulisseWidth||0); // largeur d'une coulisse en mm
+                const coulissePos = data.coulissePos || 'aucune';
+                
+                // Largeur finale = largeur screen + jeu + largeur coulisse(s)
+                let largeurScreen = l + jlBord;
+                
+                // Ajouter la largeur des coulisses selon la position
+                if(coulissePos === 'G' || coulissePos === 'D') {
+                    largeurScreen += coulisseWidth; // 1 coulisse
+                } else if(coulissePos === 'G+D') {
+                    largeurScreen += coulisseWidth * 2; // 2 coulisses
+                }
+                
+                largeurFinale = largeurScreen;
+                hauteurFinale = h + jhBord + caissonHeight;
+                data.caissonHeight = caissonHeight;
+            } else {
+                // DANS LE TROU : DÉDUIRE les jeux
+                const jl = parseFloat(data.jeuLargeur||5); // en mm
+                const jh = parseFloat(data.jeuHauteur||5); // en mm
+                
+                largeurFinale = l - jl;
+                hauteurFinale = h - jh;
+            }
+            
+            // Résultats en cm pour l'affichage
+            data.largeurFinie = (largeurFinale/10).toFixed(1);
+            data.hauteurFinie = (hauteurFinale/10).toFixed(1);
+        }
+        
+        function getSummary() {
+            return `
+                <div class="summary-section">
+                    <h3>📦 Produit</h3>
+                    <div class="summary-row"><span class="summary-label">Référence</span><span class="summary-value">${data.productRef||'-'}</span></div>
+                    <div class="summary-row"><span class="summary-label">Pièce</span><span class="summary-value">${data.roomName||'-'}</span></div>
+                    ${data.clientName?`<div class="summary-row"><span class="summary-label">Client</span><span class="summary-value">${data.clientName}</span></div>`:''}
+                </div>
+                <div class="summary-section">
+                    <h3>📐 Dimensions</h3>
+                    ${data.notation?`<div class="summary-row"><span class="summary-label">Notation</span><span class="summary-value"><strong>${data.notation}</strong></span></div>`:''}
+                    <div class="summary-row">
+                        <span class="summary-label">Largeur finie</span>
+                        <span class="summary-value"><strong>${data.largeurFinie} cm</strong></span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Détail largeur</span>
+                        <span class="summary-value" style="font-size:12px">
+                            ${data.poseMode==='bord'?
+                                (() => {
+                                    const l = parseFloat(data.largeur||0);
+                                    const jeu = parseFloat(data.jeuBordLargeur||0);
+                                    const coul = parseFloat(data.coulisseWidth||0);
+                                    const pos = data.coulissePos || 'aucune';
+                                    let detail = l + 'mm + ' + jeu + 'mm';
+                                    if(pos === 'G' || pos === 'D') detail += ' + ' + coul + 'mm coulisse';
+                                    else if(pos === 'G+D') detail += ' + ' + (coul*2) + 'mm coulisses';
+                                    return detail + ' = ' + data.largeurFinie + 'cm';
+                                })()
+                                :
+                                data.largeur+'mm - '+(data.jeuLargeur||5)+'mm = '+data.largeurFinie+'cm'
+                            }
+                        </span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Hauteur finie</span>
+                        <span class="summary-value"><strong>${data.hauteurFinie} cm</strong></span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Détail hauteur</span>
+                        <span class="summary-value" style="font-size:12px">
+                            ${data.hauteur}mm ${data.poseMode==='bord'?'+ '+(data.jeuBordHauteur||0)+'mm + '+(data.caissonHeight||90)+'mm caisson':'- '+(data.jeuHauteur||5)+'mm'} = ${data.hauteurFinie}cm
+                        </span>
+                    </div>
+                </div>
+                <div class="summary-section">
+                    <h3>⚙️ Motorisation</h3>
+                    <div class="summary-row"><span class="summary-label">Moteur</span><span class="summary-value">${data.moteur}</span></div>
+                    <div class="summary-row"><span class="summary-label">Sortie</span><span class="summary-value">${data.sortieCable}</span></div>
+                </div>
+                <div class="summary-section">
+                    <h3>🎨 Finitions</h3>
+                    <div class="summary-row"><span class="summary-label">Couleur</span><span class="summary-value">${data.couleur}${data.autreRAL?' ('+data.autreRAL+')':''}</span></div>
+                    <div class="summary-row"><span class="summary-label">Toile</span><span class="summary-value">${data.toileType}</span></div>
+                </div>
+            `;
+        }
+        
+        function addStore() {
+            const room = document.getElementById('storeRoom')?.value || '';
+            const poseMode = document.getElementById('storePoseMode')?.value || '';
+            const l = parseFloat(document.getElementById('storeLarg')?.value || 0); // en mm
+            const h = parseFloat(document.getElementById('storeHaut')?.value || 0); // en mm
+            const jl = parseFloat(document.getElementById('storeJeuL')?.value || 5); // en mm
+            const jh = parseFloat(document.getElementById('storeJeuH')?.value || 5); // en mm
+            const sortie = document.getElementById('storeSortie')?.value || '';
+            const qty = parseInt(document.getElementById('storeQty')?.value || 1);
+            
+            if(room && poseMode && l && h && sortie) {
+                const newStore = {
+                    roomName: room,
+                    poseMode: poseMode,
+                    largeurMesuree: l,
+                    hauteurMesuree: h,
+                    sortieCable: sortie,
+                    qty: qty
+                };
+                
+                // Calcul selon le mode de pose (résultats en cm)
+                if(poseMode === 'bord') {
+                    const coulissePos = document.getElementById('storeCoulissePos')?.value || 'aucune';
+                    const coulisseWidth = parseFloat(document.getElementById('storeCoulisseWidth')?.value || 45);
+                    const jeuBordL = parseFloat(document.getElementById('storeBordJeuL')?.value || 10); // en mm largeur
+                    const jeuBordH = parseFloat(document.getElementById('storeBordJeuH')?.value || 10); // en mm hauteur
+                    
+                    // Sur le jour : le jeu s'AJOUTE à la largeur mesurée
+                    let largeurScreenMm = l + jeuBordL;
+                    
+                    // Créer la notation pour la commande (largeur screen uniquement)
+                    let largeurScreenCm = (largeurScreenMm / 10).toFixed(1);
+                    let notation = largeurScreenCm;
+                    
+                    // Largeur totale = largeur screen + coulisse(s)
+                    let largeurTotale = largeurScreenMm;
+                    
+                    if(coulissePos === 'G') {
+                        notation += ' + G';
+                        largeurTotale += coulisseWidth; // Ajouter 1 coulisse
+                    } else if(coulissePos === 'D') {
+                        notation += ' + D';
+                        largeurTotale += coulisseWidth; // Ajouter 1 coulisse
+                    } else if(coulissePos === 'G+D') {
+                        notation += ' + G+D';
+                        largeurTotale += coulisseWidth * 2; // Ajouter 2 coulisses
+                    }
+                    
+                    newStore.notation = notation;
+                    newStore.largeurFinie = (largeurTotale / 10).toFixed(1); // Largeur totale en cm
+                    newStore.jeuBordL = jeuBordL;
+                    newStore.jeuBordH = jeuBordH;
+                    newStore.coulisseWidth = coulisseWidth;
+                    newStore.coulissePos = coulissePos;
+                    // Ajouter la hauteur du caisson
+                    const product = data.productRef || '';
+                    let caissonH = 90; // défaut
+                    if(product.includes('Smart 85')) caissonH = 90;
+                    else if(product.includes('Smart 100')) caissonH = 105;
+                    else if(product.includes('Smart 130')) caissonH = 130;
+                    else if(product.includes('Smart 150')) caissonH = 150;
+                    
+                    newStore.caissonHeight = caissonH;
+                    newStore.hauteurFinie = ((h + jeuBordH + caissonH) / 10).toFixed(1);
+                } else {
+                    // Dans le trou : on déduit les jeux (résultats en cm)
+                    const jl = parseFloat(document.getElementById('storeJeuL')?.value || 5);
+                    const jh = parseFloat(document.getElementById('storeJeuH')?.value || 5);
+                    newStore.largeurFinie = ((l - jl) / 10).toFixed(1);
+                    newStore.hauteurFinie = ((h - jh) / 10).toFixed(1);
+                    newStore.jeuL = jl;
+                    newStore.jeuH = jh;
+                }
+                
+
+                
+                // Ajouter commentaire et photos
+                const comment = document.getElementById('storeComment')?.value || '';
+                if(comment) newStore.comment = comment;
+                if(storePhotos.length > 0) newStore.photos = [...storePhotos];
+                
+                                stores.push(newStore);
+                
+                // NE PAS reset les données - seulement réinitialiser les valeurs spécifiques
+                // Réinitialiser toutes les données du formulaire store
+                storePhotos = [];
+                data.storeRoom = '';
+                data.storePoseMode = '';
+                data.storeLarg = '';
+                data.storeHaut = '';
+                data.storeJeuL = '5';
+                data.storeJeuH = '5';
+                data.storeQty = '1';
+                data.storeComment = '';
+                data.storeCoulissePos = '';
+                data.storeBordJeuL = '10';
+                data.storeBordJeuH = '10';
+                
+                step = 12;
+                render();
+            } else {
+                alert('Veuillez remplir tous les champs obligatoires');
+            }
+        }
+        
+        function addPhotos(e) {
+            Array.from(e.target.files).forEach(f => {
+                const r = new FileReader();
+                r.onload = ev => {
+                    photos.push({name:f.name, data:ev.target.result});
+                    renderPhotos();
+                };
+                r.readAsDataURL(f);
+            });
+        }
+        
+        function renderPhotos() {
+            const div = document.getElementById('photoPreview');
+            if(div) div.innerHTML = photos.map((p,i)=>`
+                <div class="photo-item">
+                    <img src="${p.data}">
+                    <button class="photo-remove" onclick="photos.splice(${i},1);renderPhotos()">×</button>
+                </div>
+            `).join('');
+        }
+        
+        function exportTxt() {
+            const txt = generateReport();
+            navigator.clipboard.writeText(txt).then(()=>alert('✓ Copié!'));
+        }
+        
+        function downloadTxt() {
+            const txt = generateReport();
+            const blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `Releve_${data.roomName}_${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+        }
+        
+        function generateReport() {
+            let txt = `=== RELEVÉ SCREEN ===
+
+Date: ${new Date().toLocaleDateString('fr-BE')}
+
+`;
+            txt += `CLIENT: ${data.clientName||'-'}
+ADRESSE: ${data.clientAddress||'-'}
+
+`;
+            txt += `--- PRODUIT ---
+Référence: ${data.productRef}
+
+`;
+            txt += `--- STORE 1: ${data.roomName} ---
+`;
+            txt += `Mode: ${data.poseMode==='dans'?'Dans le trou':'Sur le jour'}
+`;
+            if(data.notation) txt += `Notation: ${data.notation}
+`;
+            txt += `Largeur: ${data.largeurFinie} cm
+Hauteur: ${data.hauteurFinie} cm
+`;
+            txt += `Sortie: ${data.sortieCable}
+Quantité: 1
+`;
+            stores.forEach((s,i)=>{
+                txt += `
+--- STORE ${i+2}: ${s.roomName} ---
+`;
+                txt += `Mode: ${s.poseMode==='dans'?'Dans le trou':'Sur le jour'}
+`;
+                if(s.notation) txt += `Notation: ${s.notation}
+`;
+                txt += `Largeur: ${s.largeurFinie} cm
+Hauteur: ${s.hauteurFinie} cm
+`;
+                txt += `Sortie: ${s.sortieCable}
+`;
+                txt += `Quantité: ${s.qty||1}
+`;
+            });
+            txt += `
+--- MOTORISATION ---
+Moteur: ${data.moteur}
+`;
+            txt += `
+--- FINITIONS ---
+Couleur: ${data.couleur}`;
+            if(data.autreRAL) txt += ` (${data.autreRAL})`;
+            txt += `
+Toile: ${data.toileType}
+`;
+            if(data.toileRef) txt += `Référence toile: ${data.toileRef}
+`;
+            if(data.teleType) txt += `
+--- TÉLÉCOMMANDE ---
+Type: ${data.teleType}
+Quantité: ${data.teleQty||1}
+`;
+            if(data.remarques) txt += `
+--- REMARQUES ---
+${data.remarques}
+`;
+            if(photos.length>0) txt += `
+--- PHOTOS ---
+${photos.length} photo(s) attachée(s)
+`;
+            
+            // Ajouter la checklist
+            const checks = [
+                {key: 'check1', label: 'Accessibilité facile'},
+                {key: 'check2', label: 'Pas de poignée gênante'},
+                {key: 'check3', label: 'Passage couloir/ascenseur OK'},
+                {key: 'check4', label: 'Matériel à prévoir vérifié'},
+                {key: 'check5', label: 'Câblage simple'},
+                {key: 'check6', label: 'Client prévenu si dépassement'}
+            ];
+            
+            let hasChecks = false;
+            let checkText = '';
+            checks.forEach(c => {
+                if(data[c.key]) {
+                    if(!hasChecks) checkText += `
+--- CHECKLIST ---
+`;
+                    hasChecks = true;
+                    checkText += `✓ ${c.label}
+`;
+                }
+            });
+            
+            if(hasChecks) {
+                txt += checkText;
+                if(data.checklistRemarks) {
+                    txt += `
+Particularités: ${data.checklistRemarks}
+`;
+                }
+            }
+            
+            txt += `
+=== FIN ===`;
+            return txt;
+        }
+        
+        function reset() {
+            if(confirm('Nouveau relevé ?')) {
+                data={};photos=[];stores=[];step=1;render();
+            }
+        }
+        
+
+        
+        function attachStepListeners() {
+            // Attacher les listeners après le render
+            
+            // Étape 12 - Nouveau store
+            const coulisseSelect = document.getElementById('storeCoulissePos');
+            if(coulisseSelect) {
+                coulisseSelect.addEventListener('change', function() {
+                    data.storeCoulissePos = this.value;
+                    render();
+                });
+            }
+            
+            const widthSelect = document.getElementById('storeCoulisseWidth');
+            if(widthSelect) {
+                widthSelect.addEventListener('change', function() {
+                    data.storeCoulisseWidth = this.value;
+                    render();
+                });
+            }
+            
+            const modeSelect = document.getElementById('storePoseMode');
+            if(modeSelect) {
+                modeSelect.addEventListener('change', function() {
+                    data.storePoseMode = this.value;
+                    render();
+                });
+            }
+            
+            // Étape 3.5 - Coulisses principal
+            const coulissePosMain = document.getElementById('coulissePos');
+            if(coulissePosMain) {
+                coulissePosMain.addEventListener('change', function() {
+                    data.coulissePos = this.value;
+                    render();
+                });
+            }
+            
+            const coulisseTypeMain = document.getElementById('coulisseType');
+            if(coulisseTypeMain) {
+                coulisseTypeMain.addEventListener('change', function() {
+                    data.coulisseWidth = this.value;
+                    render();
+                });
+            }
+            
+            const fleurSelect = document.getElementById('fleur');
+            if(fleurSelect) {
+                fleurSelect.addEventListener('change', function() {
+                    data.fleur = this.value;
+                    render();
+                });
+            }
+        }
+
+        render();
+            
+        let storePhotos = [];
+        
+        function addStorePhotos(e) {
+            Array.from(e.target.files).forEach(f => {
+                const r = new FileReader();
+                r.onload = ev => {
+                    storePhotos.push({name:f.name, data:ev.target.result});
+                    renderStorePhotos();
+                };
+                r.readAsDataURL(f);
+            });
+        }
+        
+        function renderStorePhotos() {
+            const div = document.getElementById('storePhotoPreview');
+            if(div) div.innerHTML = storePhotos.map((p,i)=>`
+                <div class="photo-item">
+                    <img src="${p.data}">
+                    <button class="photo-remove" onclick="storePhotos.splice(${i},1);renderStorePhotos()">×</button>
+                </div>
+            `).join('');
+        }
+
+</script>
+</body>
+</html>
