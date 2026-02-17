@@ -1,0 +1,1966 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Mesures Screens - Leclercq Décoration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0066CC;
+            --primary-dark: #0052A3;
+            --success: #28A745;
+            --warning: #FFC107;
+            --danger: #DC3545;
+            --background: #F8F9FA;
+            --surface: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #6C757D;
+            --border: #DEE2E6;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        .container { max-width: 600px; margin: 0 auto; min-height: 100vh; }
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        .header h1 { font-size: 22px; margin-bottom: 4px; }
+        .header p { font-size: 13px; opacity: 0.9; }
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            height: 4px;
+            border-radius: 2px;
+            margin-top: 12px;
+        }
+        .progress-fill {
+            background: white;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .content { padding: 20px; }
+        .step { display: none; animation: fadeIn 0.3s; }
+        .step.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+        .step-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; color: var(--primary); }
+        .step-subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,102,204,0.1);
+        }
+        textarea { resize: vertical; min-height: 100px; }
+        .radio-group { display: flex; flex-direction: column; gap: 12px; }
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .radio-option:hover { border-color: var(--primary); background: rgba(0,102,204,0.02); }
+        .radio-option.selected { border-color: var(--primary); background: rgba(0,102,204,0.05); }
+        .radio-option input { width: 20px; height: 20px; margin-right: 12px; cursor: pointer; }
+        .radio-option label { cursor: pointer; margin: 0; flex: 1; font-weight: 500; }
+        .dimension-input-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .input-with-unit { position: relative; }
+        .input-with-unit input { padding-right: 45px; }
+        .unit-label {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .calculation-result {
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        .calculation-result h4 {
+            color: var(--success);
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .calculation-result p { font-size: 15px; margin: 4px 0; }
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 16px 0;
+            font-size: 14px;
+            display: flex;
+            gap: 12px;
+        }
+        .alert-warning {
+            background: #FFF3CD;
+            border-left: 4px solid var(--warning);
+            color: #856404;
+        }
+        .alert-info {
+            background: #D1ECF1;
+            border-left: 4px solid #17A2B8;
+            color: #0C5460;
+        }
+        .schema-container {
+            background: #F8F9FA;
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 16px 0;
+            text-align: center;
+        }
+        .schema-svg { max-width: 100%; height: auto; }
+        .button-group { display: flex; gap: 12px; margin-top: 24px; }
+        .btn {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-secondary { background: var(--border); color: var(--text-primary); }
+        .btn-secondary:hover { background: #CED4DA; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #218838; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .photo-upload {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .photo-upload:hover { border-color: var(--primary); }
+        .photo-upload input { display: none; }
+        .photo-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .photo-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .photo-item img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-remove {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        .summary-section {
+            background: var(--surface);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .summary-section h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .summary-row:last-child { border-bottom: none; }
+        .summary-label { font-weight: 500; color: var(--text-secondary); font-size: 14px; }
+        .summary-value { font-weight: 600; text-align: right; font-size: 14px; }
+        .store-item {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        .store-item h4 { font-size: 16px; color: var(--primary); margin-bottom: 8px; }
+        .store-item p { font-size: 14px; margin: 4px 0; }
+        .store-remove {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .export-buttons { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+        .btn-export {
+            padding: 16px;
+            border-radius: 8px;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+        .btn-export:hover { background: var(--primary); color: white; }
+        .hidden { display: none !important; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📏 Mesures Screens</h1>
+            <p>Leclercq Décoration</p>
+            <div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
+        </div>
+        <div class="content" id="app"></div>
+    </div>
+    <script>
+        let step = 1, data = {}, photos = [], stores = [];
+        let storePhotos = {principal: [], newStore: []};
+        
+
+        function sendByEmail() {
+            const report = generateReport();
+            const subject = encodeURIComponent('Relevé Screen - ' + (data.clientName || 'Client'));
+            const body = encodeURIComponent(report);
+            
+            // Créer le lien mailto
+            const mailtoLink = `mailto:?subject=${subject}&body=${body}`;
+            
+            // Ouvrir le client email
+            window.location.href = mailtoLink;
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+            app.innerHTML = getStepHTML();
+            const progressMap = {1:10, 2:20, 3:30, 4:40, 6:50, 7:60, 8:70, 9:80, 10:90, 12:100, 13:100};
+            document.getElementById('progressBar').style.width = (progressMap[step]||50)+'%';
+            attachStepListeners();
+            // Scroll vers le haut de la page
+            window.scrollTo(0, 0);
+        }
+        
+        function getStepHTML() {
+            if(step === 1) return `
+                <div class="card">
+                    <h2 class="step-title">1. Identification</h2>
+                    <div class="form-group">
+                        <label>Référence produit *</label>
+                        <select id="productRef">
+                            <option value="">-- Choisir --</option>
+                            <option>Screen extérieur</option>
+                            <option>Smart 85</option>
+                            <option>Smart 100</option>
+                            <option>Smart 130</option>
+                            <option>Smart 150</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nom de la pièce *</label>
+                        <input type="text" id="roomName" placeholder="Ex: Terrasse">
+                    </div>
+                    <div class="form-group">
+                        <label>Nom du client (optionnel)</label>
+                        <input type="text" id="clientName">
+                    </div>
+                    <div class="form-group">
+                        <label>Adresse (optionnel)</label>
+                        <input type="text" id="clientAddress">
+                    </div>
+                </div>
+                <div style="text-align:center;margin-top:20px">
+                    <button class="btn btn-secondary" onclick="loadProjects()" style="width:100%">
+                        📂 Charger un projet sauvegardé
+                    </button>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="save();step=2;render()">Suivant →</button>
+                </div>
+            `;
+            
+            if(step === 2) return `
+                <div class="card">
+                    <h2 class="step-title">2. Type de mesure</h2>
+                    <div class="radio-group">
+                        <div class="radio-option" onclick="data.measureType='niche';render()">
+                            <input type="radio" name="mt" ${data.measureType==='niche'?'checked':''}>
+                            <label><strong>La niche existante</strong></label>
+                        </div>
+                        <div class="radio-option" onclick="data.measureType='finished';render()">
+                            <input type="radio" name="mt" ${data.measureType==='finished'?'checked':''}>
+                            <label><strong>Les dimensions finies souhaitées</strong></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=1;render()">← Retour</button>
+                    <button class="btn btn-primary" onclick="step=data.measureType==='finished'?4:3;render()" ${!data.measureType?'disabled':''}>Suivant →</button>
+                </div>
+            `;
+            
+            
+            if(step === 3) return `
+                <div class="card">
+                    <h2 class="step-title">3. Mode de pose</h2>
+                    <div class="radio-group">
+                        <div class="radio-option" onclick="data.poseMode='dans';step=4;render()">
+                            <input type="radio" name="pm" ${data.poseMode==='dans'?'checked':''}>
+                            <label><strong>DANS LE TROU (encastré)</strong></label>
+                        </div>
+                        <div class="radio-option" onclick="data.poseMode='bord';if(!data.fleur)data.fleur='oui';if(!data.coulissePos)data.coulissePos='aucune';render()">
+                            <input type="radio" name="pm" ${data.poseMode==='bord'?'checked':''}>
+                            <label><strong>AU BORD DU TROU (applique)</strong></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=2;render()">← Retour</button>
+                    <button class="btn btn-primary" onclick="step=4;render()" ${!data.poseMode?'disabled':''}>Suivant →</button>
+                </div>
+            `;
+            
+            if(step === 4) return `
+                <div class="card">
+                    <h2 class="step-title">4. Dimensions et jeux (mm)</h2>
+
+                    ${data.poseMode==='bord'?`
+                    <div class="alert alert-info" style="margin-bottom:16px">
+                        <span class="alert-icon">ℹ️</span>
+                        <div>Mode <strong>Hors baie</strong> : Les jeux s'ajoutent aux dimensions</div>
+                    </div>
+                    `:`
+                    <div class="alert alert-info" style="margin-bottom:16px">
+                        <span class="alert-icon">ℹ️</span>
+                        <div>Mode <strong>Dans le trou</strong> : Les jeux se soustraient aux dimensions</div>
+                    </div>
+                    `}
+
+                    <h3 style="color:var(--primary);margin-bottom:12px">📏 Largeur</h3>
+                    <div class="form-group">
+                        <label>Largeur (mm) *</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="largeur" value="${data.largeur||''}" oninput="data.largeur=this.value" placeholder="4500">
+                            <span class="unit-label">mm</span>
+                        </div>
+                        <p class="step-subtitle" style="font-size:11px;margin-top:4px">Mesure du bord gauche au centre du montant (ou bord droit si pas de montant)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Largeur du montant central (si applicable)</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="largeurMontant" value="${data.largeurMontant||''}" oninput="data.largeurMontant=this.value" placeholder="50">
+                            <span class="unit-label">mm</span>
+                        </div>
+                        <p class="step-subtitle" style="font-size:11px;margin-top:4px">Laisse vide si pas de montant central</p>
+                    </div>
+                    ${data.poseMode==='bord'?`
+                    <div class="form-group">
+                        <label>Jeu largeur (mm)</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="jeuBordLargeur" placeholder="0" value="${data.jeuBordLargeur||''}" oninput="data.jeuBordLargeur=this.value">
+                            <span class="unit-label">mm</span>
+                        </div>
+                    </div>
+                    `:`
+                    <div class="form-group">
+                        <label>Jeu largeur (mm)</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="jeuLargeur" placeholder="5" value="${data.jeuLargeur||''}" oninput="data.jeuLargeur=this.value">
+                            <span class="unit-label">mm</span>
+                        </div>
+                    </div>
+                    `}
+
+                    <h3 style="color:var(--primary);margin:20px 0 12px">📏 Hauteur</h3>
+                    <div class="form-group">
+                        <label>Hauteur (mm) *</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="hauteur" value="${data.hauteur||''}" oninput="data.hauteur=this.value" placeholder="2800">
+                            <span class="unit-label">mm</span>
+                        </div>
+                    </div>
+                    ${data.poseMode==='bord'?`
+                    <div class="form-group">
+                        <label>Jeu hauteur (mm)</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="jeuBordHauteur" placeholder="0" value="${data.jeuBordHauteur||''}" oninput="data.jeuBordHauteur=this.value">
+                            <span class="unit-label">mm</span>
+                        </div>
+                    </div>
+                    `:`
+                    <div class="form-group">
+                        <label>Jeu hauteur (mm)</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="jeuHauteur" placeholder="5" value="${data.jeuHauteur||''}" oninput="data.jeuHauteur=this.value">
+                            <span class="unit-label">mm</span>
+                        </div>
+                    </div>
+                    `}
+
+                    ${data.poseMode==='bord'?`
+                    <h3 style="color:var(--primary);margin:20px 0 12px">🎚️ Coulisses</h3>
+                    <div class="form-group">
+                        <label>Position coulisse</label>
+                        <select id="coulissePos" onchange="data.coulissePos=this.value;render()">
+                            <option value="aucune" ${data.coulissePos==='aucune'?'selected':''}>Aucune</option>
+                            <option value="G" ${data.coulissePos==='G'?'selected':''}>Gauche (G)</option>
+                            <option value="D" ${data.coulissePos==='D'?'selected':''}>Droite (D)</option>
+                            <option value="G+D" ${data.coulissePos==='G+D'?'selected':''}>Gauche + Droite (G+D)</option>
+                        </select>
+                    </div>
+                    ${data.coulissePos && data.coulissePos!=='aucune'?`
+                    <div class="form-group">
+                        <label>Type de coulisse</label>
+                        <select id="coulisseWidth" onchange="data.coulisseWidth=this.value">
+                            <option value="27" ${data.coulisseWidth==='27'?'selected':''}>STG-S* (27mm)</option>
+                            <option value="45" ${data.coulisseWidth==='45' || !data.coulisseWidth?'selected':''}>STG (45mm)</option>
+                            <option value="40" ${data.coulisseWidth==='40'?'selected':''}>MSTG (40mm)</option>
+                            <option value="56" ${data.coulisseWidth==='56'?'selected':''}>MSTG-S (56mm)</option>
+                        </select>
+                    </div>
+                    `:''}
+                    `:''}
+
+                    <h3 style="color:var(--primary);margin:20px 0 12px">📷 Photos</h3>
+                    <div class="form-group">
+                        <div class="photo-upload" onclick="document.getElementById('photoInputStore').click()">
+                            <input type="file" id="photoInputStore" accept="image/*" multiple onchange="addPhotosToStore(event, 'principal')">
+                            <p style="font-size:48px">📷</p>
+                            <p>Ajouter des photos pour ce store</p>
+                        </div>
+                        <div class="photo-preview" id="photoPreviewStore">
+                        ${(storePhotos.principal||[]).map((p,i)=>`
+                            <div class="photo-item">
+                                <img src="${p.data}" alt="${p.name}">
+                                <button class="photo-delete" onclick="deleteStorePhoto('principal', ${i})">×</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                    </div>
+                    
+                    <h3 style="color:var(--primary);margin:20px 0 12px">💬 Commentaires</h3>
+                    <div class="form-group">
+                        <textarea id="storeComments" placeholder="Remarques spécifiques à ce store..." oninput="data.storeComments=this.value">${data.storeComments||''}</textarea>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=${data.measureType==='finished'?2:3};render()">← Retour</button>
+                    <button class="btn btn-primary" onclick="save();
+                    data.photos = storePhotos.principal || [];
+                    calcDims();
+                    step=6;
+                    render()">Suivant →</button>
+                </div>
+            `;
+            
+            if(step === 6) return `
+                <div class="card">
+                    <h2 class="step-title">6. Sortie de câble</h2>
+                    <div class="form-group">
+                        <label>Sortie de câble *</label>
+                        <div style="text-align:center;margin-bottom:12px;background:#fff;padding:12px;border-radius:8px;border:1px solid #ddd">
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+                                <img src="data:image/png;base64,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" alt="Sorties câble extérieures" style="width:100%;height:auto;border:1px solid #ddd;border-radius:4px">
+                                <img src="data:image/png;base64,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" alt="Sorties câble intérieures" style="width:100%;height:auto;border:1px solid #ddd;border-radius:4px">
+                            </div>
+                            <p style="font-size:11px;color:#666;margin-top:8px">📸 Positions extérieures (gauche) et intérieures (droite)</p>
+                        </div>
+                        <select id="sortieCable">
+                            <option value="">-- Choisir --</option>
+                            <option value="K">K - Bas coulisse gauche</option>
+                            <option value="T">T - Bas coulisse droite</option>
+                            <option value="J">J - Arrière haut droite</option>
+                            <option value="I">I - Arrière haut gauche</option>
+                            <option value="P">P - Haut arrière droite</option>
+                            <option value="O">O - Haut arrière gauche</option>
+                            <option value="N">N - Haut avant droite</option>
+                            <option value="M">M - Haut avant gauche</option>
+                            <option value="Z">Z - Latéral droite</option>
+                            <option value="W">W - Latéral gauche</option>
+                            <option value="E">E - Haut face gauche</option>
+                            <option value="F">F - Haut face droite</option>
+                            <option value="G">G - Bas face gauche</option>
+                            <option value="H">H - Bas face droite</option>
+                            <option value="A">A - Arrière bas gauche</option>
+                            <option value="B">B - Arrière bas droite</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=4;render()">← Retour</button>
+                    <button class="btn btn-primary" onclick="save();step=7;render()">Suivant →</button>
+                </div>
+            `;
+            
+            if(step === 7) return `
+                <div class="card">
+                    <h2 class="step-title">7. Motorisation</h2>
+                    <div class="form-group">
+                        <label>Type de moteur *</label>
+                        <select id="moteur">
+                            <option value="">-- Choisir --</option>
+                            <optgroup label="Somfy">
+                                <option ${data.moteur==='Somfy io'?'selected':''}>Somfy io</option>
+                                <option ${data.moteur==='Somfy RTS'?'selected':''}>Somfy RTS</option>
+                                <option ${data.moteur==='Somfy Solaire'?'selected':''}>Somfy Solaire</option>
+                                <option ${data.moteur==='Somfy filaire'?'selected':''}>Somfy filaire</option>
+                            </optgroup>
+                            <optgroup label="FAHER">
+                                <option ${data.moteur==='FAHER filaire'?'selected':''}>FAHER filaire</option>
+                                <option ${data.moteur==='FAHER RADIO'?'selected':''}>FAHER RADIO</option>
+                                <option ${data.moteur==='FAHER SOLAIRE'?'selected':''}>FAHER SOLAIRE</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=6;render()">← Retour</button>
+                    <button class="btn btn-primary" onclick="save();step=8;render()">Suivant →</button>
+                </div>
+            `;
+            
+            
+            
+            if(step === 8) return `
+                <div class="card">
+                    <h2 class="step-title">7. Finitions</h2>
+                    <div class="form-group">
+                        <label>Couleur *</label>
+                        <select id="couleur">
+                            <option value="">-- Choisir --</option>
+                            <optgroup label="RAL Standard">
+                                <option ${data.couleur==='RAL 9001 Blanc crème'?'selected':''}>RAL 9001 Blanc crème</option>
+                                <option ${data.couleur==='RAL 9010 Blanc pur'?'selected':''}>RAL 9010 Blanc pur</option>
+                                <option ${data.couleur==='RAL 9016 Blanc signalisation'?'selected':''}>RAL 9016 Blanc signalisation</option>
+                                <option ${data.couleur==='Argent Technique'?'selected':''}>Argent Technique</option>
+                                <option ${data.couleur==='RAL 7016 Gris anthracite'?'selected':''}>RAL 7016 Gris anthracite</option>
+                                <option ${data.couleur==='RAL 8019 Brun gris'?'selected':''}>RAL 8019 Brun gris</option>
+                                <option ${data.couleur==='RAL 7039 Gris quartz'?'selected':''}>RAL 7039 Gris quartz</option>
+                            </optgroup>
+                            <optgroup label="Laque structurée (+20%)">
+                                <option ${data.couleur==='STR 7S16'?'selected':''}>STR 7S16</option>
+                                <option ${data.couleur==='STR 9S07'?'selected':''}>STR 9S07</option>
+                                <option ${data.couleur==='STR 7S39'?'selected':''}>STR 7S39</option>
+                                <option ${data.couleur==='STR 9S06'?'selected':''}>STR 9S06</option>
+                                <option ${data.couleur==='Tiger 29/80081'?'selected':''}>Tiger 29/80081</option>
+                                <option ${data.couleur==='STR 9S05'?'selected':''}>STR 9S05</option>
+                            </optgroup>
+                            <optgroup label="Autre">
+                                <option ${data.couleur==='Autre RAL (+15%)'?'selected':''}>Autre RAL (+15%)</option>
+                                <option ${data.couleur==='RAL métallique (+20%)'?'selected':''}>RAL métallique (+20%)</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    ${data.couleur==='Autre RAL (+15%)' || data.couleur==='RAL métallique (+20%)'?`
+                    <div class="form-group">
+                        <label>Code RAL *</label>
+                        <input type="text" id="autreRAL" placeholder="Ex: RAL 7016" value="${data.autreRAL||''}" oninput="data.autreRAL=this.value">
+                    </div>
+                    `:''}
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=7;render()">← Retour</button>
+                    <button class="btn btn-primary" onclick="save();step=9;render()">Suivant →</button>
+                </div>
+            `;
+            
+            if(step === 9) return `
+                <div class="card">
+                    <h2 class="step-title">8. Toile</h2>
+                    <div class="form-group">
+                        <label>Type *</label>
+                        <select id="toileType">
+                            <option value="">-- Choisir --</option>
+                            <option ${data.toileType==='Serge 600 OF 5%'?'selected':''}>Serge 600 OF 5%</option>
+                            <option ${data.toileType==='Serge 600 OF 10%'?'selected':''}>Serge 600 OF 10%</option>
+                            <option ${data.toileType==='Soltis 86'?'selected':''}>Soltis 86</option>
+                            <option ${data.toileType==='Soltis 92'?'selected':''}>Soltis 92</option>
+                            <option ${data.toileType==='Autre'?'selected':''}>Autre</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Référence</label>
+                        <input type="text" id="toileRef" placeholder="5500-0220">
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=8;render()">← Retour</button>
+                    <button class="btn btn-primary" onclick="save();step=10;render()">Suivant →</button>
+                </div>
+            `;
+            
+            if(step === 10) {
+                if(!data.accessoires) data.accessoires = {};
+                const accList = [
+                    {key:'tele1', label:'Télécommande 1 canal'},
+                    {key:'tele5', label:'Télécommande 5 canaux'},
+                    {key:'inter1', label:'Interrupteur télécommande 1 canal'},
+                    {key:'inter5', label:'Interrupteur 5 canaux'},
+                    {key:'soleil', label:'Capteur de soleil'},
+                    {key:'vent', label:'Capteur de vent'},
+                    {key:'tahoma', label:'Tahoma'}
+                ];
+                return `
+                <div class="card">
+                    <h2 class="step-title">9. Accessoires</h2>
+                    ${accList.map(a=>`
+                    <div class="form-group" style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+                        <label style="flex:1;margin:0">${a.label}</label>
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <button type="button" class="btn btn-secondary" style="width:36px;height:36px;padding:0;font-size:18px;line-height:1" onclick="data.accessoires['${a.key}']=Math.max(0,(data.accessoires['${a.key}']||0)-1);render()">−</button>
+                            <span style="min-width:28px;text-align:center;font-weight:bold;font-size:16px">${data.accessoires[a.key]||0}</span>
+                            <button type="button" class="btn btn-primary" style="width:36px;height:36px;padding:0;font-size:18px;line-height:1" onclick="data.accessoires['${a.key}']=(data.accessoires['${a.key}']||0)+1;render()">+</button>
+                        </div>
+                    </div>
+                    `).join('')}
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=9;render()">← Retour</button>
+                    <button class="btn btn-primary" onclick="step=12;render()">Suivant →</button>
+                </div>
+            `;
+            }
+            
+            if(step === 12) return `
+                <div class="card">
+                    <h2 class="step-title">✓ Récapitulatif</h2>
+                    ${getSummary()}
+                </div>
+                <div class="card">
+                    <h3>📋 Stores du projet (${stores.length + 1})</h3>
+                    <!-- Store principal -->
+                    <div class="store-item">
+                        <h4>Store 1 : ${data.roomName||"Sans nom"}</h4>
+                        <p><strong>Dimensions:</strong> ${data.largeurFinie||"-"} x ${data.hauteurFinie||"-"} cm</p>
+                        <p style="font-size:12px;color:var(--text-secondary);margin-top:4px">
+                            ${data.poseMode==='bord'?
+                                (() => {
+                                    const l = parseFloat(data.largeur||0);
+                                    const jeuL = parseFloat(data.jeuBordLargeur||0);
+                                    const jeuH = parseFloat(data.jeuBordHauteur||0);
+                                    const coul = parseFloat(data.coulisseWidth||0);
+                                    const pos = data.coulissePos || 'aucune';
+                                    let largeurAffichage = data.largeurMontant && data.largeurMontant !== '' && parseFloat(data.largeurMontant)>0 ? 
+                                        data.largeur + ' + (' + data.largeurMontant + '÷2)' : 
+                                        data.largeur;
+                                    let detailL = '📐 L: ' + largeurAffichage + 'mm + ' + jeuL + 'mm';
+                                    if(pos === 'G' || pos === 'D') detailL += ' + ' + coul + 'mm coulisse';
+                                    else if(pos === 'G+D') detailL += ' + ' + (coul*2) + 'mm coulisses';
+                                    detailL += ' = ' + (data.largeurFinie||'-') + 'cm';
+                                    return detailL + '<br>📏 H: ' + (data.hauteur||'-') + 'mm + ' + jeuH + 'mm + ' + (data.caissonHeight||90) + 'mm caisson = ' + (data.hauteurFinie||'-') + 'cm';
+                                })()
+                                :
+                                `${data.largeurMontant && data.largeurMontant !== '' && parseFloat(data.largeurMontant)>0?
+                                `📐 L: ${data.largeur||0}mm + (${data.largeurMontant||0}mm ÷ 2) - ${data.jeuLargeur||0}mm = ${data.largeurFinie||'-'}cm`:
+                                `📐 L: ${data.largeur||0}mm - ${data.jeuLargeur||0}mm = ${data.largeurFinie||'-'}cm`
+                                }<br>
+                                 📏 H: ${data.hauteur||'-'}mm - ${data.jeuHauteur||0}mm = ${data.hauteurFinie||'-'}cm`
+                            }
+                        </p>
+                        <p><strong>Mode:</strong> ${data.poseMode==='dans'?'Dans le trou':'Sur le jour'}</p>
+                        ${data.notation?`<p><strong>Notation:</strong> ${data.notation}</p>`:''}
+                        <p><strong>Sortie:</strong> ${data.sortieCable||"-"}</p>
+                        <p style="margin-top:8px"><strong>Quantité:</strong> 
+                            <input type="number" min="1" value="${data.qty||1}" style="width:60px;padding:4px;border:1px solid #ddd;border-radius:4px" 
+                            onchange="data.qty=parseInt(this.value)">
+                        </p>
+                        ${(data.photos && data.photos.length>0)?`
+                        <p style="margin-top:12px"><strong>📷 Photos:</strong> ${data.photos.length} photo(s)</p>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+                            ${data.photos.map(p=>`<img src="${p.data}" style="width:80px;height:80px;object-fit:cover;border-radius:4px;border:2px solid #ddd">`).join('')}
+                        </div>
+                        `:''}
+                        ${data.storeComments?`
+                        <p style="margin-top:12px"><strong>💬 Commentaires:</strong></p>
+                        <p style="font-style:italic;color:#666;padding:8px;background:#f5f5f5;border-radius:4px;margin-top:4px">${data.storeComments}</p>
+                        `:''}
+                    <button class="btn btn-secondary" style="margin-top:12px" onclick="editMainStore()">✏️ Modifier</button>
+                        </div>
+                    ${stores.length>0?stores.map((s,i)=>`
+                    <div class="store-item">
+                        <h4>Store ${i+2} : ${s.roomName||"Sans nom"}</h4>
+                        ${s.productRef && s.productRef !== data.productRef?`<p style="font-size:12px;color:var(--primary);font-weight:bold">📦 ${s.productRef}</p>`:''}
+                        <p><strong>Dimensions:</strong> ${s.largeurFinie||"-"} x ${s.hauteurFinie||"-"} cm</p>
+                        <p style="font-size:12px;color:var(--text-secondary);margin-top:4px">
+                            ${s.poseMode==='bord'?
+                                (() => {
+                                    const coul = parseFloat(s.coulisseWidth||0);
+                                    const pos = s.coulissePos || 'aucune';
+                                    let largeurAffichage = s.largeurMontant && s.largeurMontant !== '' && parseFloat(s.largeurMontant)>0 ? 
+                                        s.largeurMesuree + ' + (' + s.largeurMontant + '÷2)' : 
+                                        s.largeurMesuree;
+                                    let detailL = '📐 L: ' + largeurAffichage + 'mm + ' + (s.jeuBordL||0) + 'mm';
+                                    if(pos === 'G' || pos === 'D') detailL += ' + ' + coul + 'mm coulisse';
+                                    else if(pos === 'G+D') detailL += ' + ' + (coul*2) + 'mm coulisses';
+                                    detailL += ' = ' + (s.largeurFinie||'-') + 'cm';
+                                    return detailL + '<br>📏 H: ' + (s.hauteurMesuree||'-') + 'mm + ' + (s.jeuBordH||0) + 'mm + ' + (s.caissonHeight||90) + 'mm caisson = ' + (s.hauteurFinie||'-') + 'cm';
+                                })()
+                                :
+                                `${s.largeurMontant && s.largeurMontant !== '' && parseFloat(s.largeurMontant)>0?
+                                `📐 L: ${s.largeurMesuree||'-'}mm + (${s.largeurMontant||0}mm ÷ 2) - ${s.jeuL||0}mm = ${s.largeurFinie||'-'}cm`:
+                                `📐 L: ${s.largeurMesuree||'-'}mm - ${s.jeuL||0}mm = ${s.largeurFinie||'-'}cm`
+                                }<br>
+                                 📏 H: ${s.hauteurMesuree||'-'}mm - ${s.jeuH||0}mm = ${s.hauteurFinie||'-'}cm`
+                            }
+                        </p>
+                        <p><strong>Mode:</strong> ${s.poseMode==='dans'?'Dans le trou':'Sur le jour'}</p>
+                        ${s.notation?`<p><strong>Notation:</strong> ${s.notation}</p>`:''}
+                        <p><strong>Sortie:</strong> ${s.sortieCable||"-"}</p>
+                        <p style="margin-top:8px"><strong>Quantité:</strong> 
+                            <input type="number" min="1" value="${s.qty||1}" style="width:60px;padding:4px;border:1px solid #ddd;border-radius:4px" 
+                            onchange="stores[${i}].qty=parseInt(this.value);render()">
+                        </p>
+                        ${(s.photos && s.photos.length>0)?`
+                        <p style="margin-top:12px"><strong>📷 Photos:</strong> ${s.photos.length} photo(s)</p>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+                            ${s.photos.map(p=>`<img src="${p.data}" style="width:80px;height:80px;object-fit:cover;border-radius:4px;border:2px solid #ddd">`).join('')}
+                        </div>
+                        `:''}
+                        ${s.comments?`
+                        <p style="margin-top:12px"><strong>💬 Commentaires:</strong></p>
+                        <p style="font-style:italic;color:#666;padding:8px;background:#f5f5f5;border-radius:4px;margin-top:4px">${s.comments}</p>
+                        `:''}
+                        <div style="display:flex;gap:8px;margin-top:12px">
+                            <button class="btn btn-secondary" style="flex:1" onclick="editStore(${i})">✏️ Modifier</button>
+                            <button class="btn btn-secondary" style="flex:1;background:#dc3545" onclick="deleteStore(${i})">🗑️ Supprimer</button>
+                        </div>
+                    </div>
+                    `).join(''):''}
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-success" onclick="if(!data.storeCoulissePos)data.storeCoulissePos='aucune';step=13;render()">+ Ajouter un store</button>
+                </div>
+                <div class="export-buttons">
+                    <button class="btn-export" onclick="exportTxt()">📋 Copier texte</button>
+                    <button class="btn-export" onclick="downloadTxt()">💾 Télécharger TXT</button>
+                    <button class="btn-export" onclick="downloadPDF()">📄 Télécharger PDF</button>
+                    <button class="btn-export" onclick="sendByEmail()">📧 Email</button>
+                </div>
+                <div class="export-buttons" style="margin-top:12px">
+                    <button class="btn-export" style="background:var(--success)" onclick="saveProject()">💾 Sauvegarder le projet</button>
+                    <button class="btn-export" style="background:var(--secondary)" onclick="step=1;render()">✏️ Modifier</button>
+                </div>
+                <div class="button-group" style="margin-top:24px">
+                    <button class="btn btn-secondary" onclick="step=10;render()">← Modifier</button>
+                    <button class="btn btn-primary" onclick="reset()">Nouveau relevé</button>
+                </div>
+            `;
+            
+            if(step === 13) return `
+                <div class="card">
+                    <h2 class="step-title">+ Nouveau store</h2>
+                    <div class="form-group">
+                        <label>Pièce *</label>
+                        <input type="text" id="storeRoom" value="${data.storeRoom||''}" oninput="data.storeRoom=this.value">
+                    </div>
+                    <div class="form-group">
+                        <label>Type de store</label>
+                        <select id="storeProductRef" onchange="data.storeProductRef=this.value">
+                            <option value="">-- Même que le principal --</option>
+                            <option value="Screen extérieur" ${data.storeProductRef==='Screen extérieur'?'selected':''}>Screen extérieur</option>
+                            <option value="Smart 85" ${data.storeProductRef==='Smart 85'?'selected':''}>Smart 85</option>
+                            <option value="Smart 100" ${data.storeProductRef==='Smart 100'?'selected':''}>Smart 100</option>
+                            <option value="Smart 130" ${data.storeProductRef==='Smart 130'?'selected':''}>Smart 130</option>
+                            <option value="Smart 150" ${data.storeProductRef==='Smart 150'?'selected':''}>Smart 150</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Mode de pose *</label>
+                        <select id="storePoseMode" onchange="data.storePoseMode=this.value;render()">
+                            <option value="">-- Choisir --</option>
+                            <option value="dans" ${data.storePoseMode==='dans'?'selected':''}>Dans le trou (encastré)</option>
+                            <option value="bord" ${data.storePoseMode==='bord'?'selected':''}>Sur le jour (applique)</option>
+                        </select>
+                    </div>
+                    
+                    ${data.storePoseMode==='bord'?`
+                    <div class="alert alert-info" style="margin-bottom:16px">
+                        <span class="alert-icon">ℹ️</span>
+                        <div>Mode <strong>Hors baie</strong> : Les jeux s'ajoutent aux dimensions</div>
+                    </div>
+                    `:(data.storePoseMode==='dans'?`
+                    <div class="alert alert-info" style="margin-bottom:16px">
+                        <span class="alert-icon">ℹ️</span>
+                        <div>Mode <strong>Dans le trou</strong> : Les jeux se soustraient aux dimensions</div>
+                    </div>
+                    `:'')}
+
+                    <h3 style="color:var(--primary);margin-bottom:12px">📏 Largeur</h3>
+                    <div class="form-group">
+                        <label>Largeur (mm) *</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="storeLarg" value="${data.storeLarg||''}" oninput="data.storeLarg=this.value" placeholder="4500">
+                            <span class="unit-label">mm</span>
+                        </div>
+                        <p class="step-subtitle" style="font-size:11px;margin-top:4px">Mesure du bord au centre du montant</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Largeur du montant central (si applicable)</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="storeLargMontant" value="${data.storeLargMontant||''}" oninput="data.storeLargMontant=this.value" placeholder="50">
+                            <span class="unit-label">mm</span>
+                        </div>
+                        <p class="step-subtitle" style="font-size:11px;margin-top:4px">Laisse vide si pas de montant</p>
+                    </div>
+                    ${data.storePoseMode==='bord'?`
+                    <div class="form-group">
+                        <label>Jeu largeur (mm)</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="storeBordJeuL" placeholder="0" value="${data.storeBordJeuL||''}" oninput="data.storeBordJeuL=this.value">
+                            <span class="unit-label">mm</span>
+                        </div>
+                    </div>
+                    `:(data.storePoseMode==='dans'?`
+                    <div class="form-group">
+                        <label>Jeu largeur (mm)</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="storeJeuL" value="${data.storeJeuL||''}" placeholder="5" oninput="data.storeJeuL=this.value">
+                            <span class="unit-label">mm</span>
+                        </div>
+                    </div>
+                    `:'')}
+
+                    <h3 style="color:var(--primary);margin:20px 0 12px">📏 Hauteur</h3>
+                    <div class="form-group">
+                        <label>Hauteur (mm) *</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="storeHaut" value="${data.storeHaut||''}" oninput="data.storeHaut=this.value" placeholder="2800">
+                            <span class="unit-label">mm</span>
+                        </div>
+                    </div>
+                    ${data.storePoseMode==='bord'?`
+                    <div class="form-group">
+                        <label>Jeu hauteur (mm)</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="storeBordJeuH" placeholder="0" value="${data.storeBordJeuH||''}" oninput="data.storeBordJeuH=this.value">
+                            <span class="unit-label">mm</span>
+                        </div>
+                    </div>
+                    `:(data.storePoseMode==='dans'?`
+                    <div class="form-group">
+                        <label>Jeu hauteur (mm)</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="storeJeuH" value="${data.storeJeuH||''}" placeholder="5" oninput="data.storeJeuH=this.value">
+                            <span class="unit-label">mm</span>
+                        </div>
+                    </div>
+                    `:'')}
+
+                    ${data.storePoseMode==='bord'?`
+                    <h3 style="color:var(--primary);margin:20px 0 12px">🎚️ Coulisses</h3>
+                    <div class="form-group">
+                        <label>Position coulisse</label>
+                        <select id="storeCoulissePos" onchange="data.storeCoulissePos=this.value;render()">
+                            <option value="aucune" ${data.storeCoulissePos==='aucune' || !data.storeCoulissePos?'selected':''}>Aucune</option>
+                            <option value="G" ${data.storeCoulissePos==='G'?'selected':''}>Gauche (G)</option>
+                            <option value="D" ${data.storeCoulissePos==='D'?'selected':''}>Droite (D)</option>
+                            <option value="G+D" ${data.storeCoulissePos==='G+D'?'selected':''}>Gauche + Droite (G+D)</option>
+                        </select>
+                    </div>
+                    ${data.storeCoulissePos && data.storeCoulissePos!=='aucune'?`
+                    <div class="form-group">
+                        <label>Type de coulisse</label>
+                        <select id="storeCoulisseWidth" onchange="data.storeCoulisseWidth=this.value">
+                            <option value="27" ${data.storeCoulisseWidth==='27'?'selected':''}>STG-S* (27mm)</option>
+                            <option value="45" ${data.storeCoulisseWidth==='45' || !data.storeCoulisseWidth?'selected':''}>STG (45mm)</option>
+                            <option value="40" ${data.storeCoulisseWidth==='40'?'selected':''}>MSTG (40mm)</option>
+                            <option value="56" ${data.storeCoulisseWidth==='56'?'selected':''}>MSTG-S (56mm)</option>
+                        </select>
+                    </div>
+                    `:''}
+                    `:''}
+
+                    <div class="form-group">
+                        <label>Sortie câble *</label>
+                        <div style="text-align:center;margin-bottom:12px;background:#fff;padding:12px;border-radius:8px;border:1px solid #ddd">
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+                                <img src="data:image/png;base64,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" alt="Sorties câble extérieures" style="width:100%;height:auto;border:1px solid #ddd;border-radius:4px">
+                                <img src="data:image/png;base64,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" alt="Sorties câble intérieures" style="width:100%;height:auto;border:1px solid #ddd;border-radius:4px">
+                            </div>
+                            <p style="font-size:11px;color:#666;margin-top:8px">📸 Positions extérieures (gauche) et intérieures (droite)</p>
+                        </div>
+                        <select id="storeSortie">
+                            <option value="">-- Choisir --</option>
+                            <option value="K">K - Bas coulisse gauche</option>
+                            <option value="T">T - Bas coulisse droite</option>
+                            <option value="J">J - Arrière haut droite</option>
+                            <option value="I">I - Arrière haut gauche</option>
+                            <option value="P">P - Haut arrière droite</option>
+                            <option value="O">O - Haut arrière gauche</option>
+                            <option value="N">N - Haut avant droite</option>
+                            <option value="M">M - Haut avant gauche</option>
+                            <option value="Z">Z - Latéral droite</option>
+                            <option value="W">W - Latéral gauche</option>
+                            <option value="E">E - Haut face gauche</option>
+                            <option value="F">F - Haut face droite</option>
+                            <option value="G">G - Bas face gauche</option>
+                            <option value="H">H - Bas face droite</option>
+                            <option value="A">A - Arrière bas gauche</option>
+                            <option value="B">B - Arrière bas droite</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantité</label>
+                        <input type="number" id="storeQty" value="1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Commentaire pour ce store</label>
+                        <textarea id="storeComment" oninput="data.storeComment=this.value" placeholder="Remarques spécifiques à ce store...">${data.storeComment||''}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Photos pour ce store</label>
+                        <div class="photo-upload" onclick="document.getElementById('storePhotoInput').click()">
+                            <input type="file" id="storePhotoInput" accept="image/*" multiple onchange="addStorePhotos(event)">
+                            <p style="font-size:32px">📷</p>
+                            <p>Ajouter des photos</p>
+                        </div>
+                        <div class="photo-preview" id="storePhotoPreview"></div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="step=12;render()">Annuler</button>
+                    <button class="btn btn-primary" onclick="addStore()">Enregistrer</button>
+                </div>
+            `;
+        }
+        
+
+
+        function editMainStore() {
+            // Retourner à l'étape appropriée selon le type de mesure
+            step = data.measureType === 'finished' ? 4 : 3;
+            render();
+        }
+        
+        function editStore(index) {
+            // Charger les données du store dans les champs d'édition
+            const store = stores[index];
+            
+            // Pré-remplir les données
+            data.storeRoom = store.roomName;
+            data.storeProductRef = store.productRef;
+            data.storePoseMode = store.poseMode;
+            data.storeLarg = store.largeurMesuree;
+            data.storeLargMontant = store.largeurMontant;
+            data.storeHaut = store.hauteurMesuree;
+            data.storeSortie = store.sortieCable;
+            data.storeQty = store.qty;
+            data.storeComment = store.comments || '';
+
+            // Charger jeux et coulisses
+            if(store.poseMode === 'bord') {
+                data.storeBordJeuL = store.jeuBordL || '';
+                data.storeBordJeuH = store.jeuBordH || '';
+                data.storeCoulissePos = store.coulissePos || 'aucune';
+                data.storeCoulisseWidth = store.coulisseWidth || '';
+            } else {
+                data.storeJeuL = store.jeuL || '';
+                data.storeJeuH = store.jeuH || '';
+            }
+            
+            // Charger les photos du store
+            storePhotos.newStore = store.photos || [];
+            
+            // Supprimer temporairement le store de la liste
+            data.editingStoreIndex = index;
+            
+            // Aller à l'étape d'ajout de store
+            step = 13;
+            render();
+            
+            // Changer le texte du bouton
+            setTimeout(() => {
+                const addBtn = document.querySelector('button[onclick*="addStore"]');
+                if(addBtn) {
+                    addBtn.textContent = '✓ Enregistrer modifications';
+                    addBtn.onclick = function() { updateStore(index); };
+                }
+            }, 100);
+        }
+        
+        function updateStore(index) {
+            // Mettre à jour le store existant au lieu d'en ajouter un nouveau
+            const room = document.getElementById('storeRoom')?.value || '';
+            const poseMode = document.getElementById('storePoseMode')?.value || '';
+            const l = parseFloat(document.getElementById('storeLarg')?.value || 0);
+            const montant = parseFloat(document.getElementById('storeLargMontant')?.value || 0);
+            let largeurAvecMontant = l;
+            if(montant > 0) {
+                largeurAvecMontant = l + (montant / 2);
+            }
+            const h = parseFloat(document.getElementById('storeHaut')?.value || 0);
+            const sortie = document.getElementById('storeSortie')?.value || '';
+            const qty = parseInt(document.getElementById('storeQty')?.value || 1);
+            const productRef = document.getElementById('storeProductRef')?.value || '';
+
+            if(room && poseMode && l && h && sortie) {
+                // Recalculer les dimensions
+                const updatedStore = {
+                    roomName: room,
+                    poseMode: poseMode,
+                    largeurMesuree: l,
+                    largeurMontant: montant,
+                    largeurAvecMontant: largeurAvecMontant,
+                    hauteurMesuree: h,
+                    sortieCable: sortie,
+                    qty: qty,
+                    productRef: productRef || data.productRef,
+                    photos: storePhotos.newStore ? [...storePhotos.newStore] : [],
+                    comments: document.getElementById('storeComment')?.value || ''
+                };
+
+                // Recalculer selon le mode (même logique que addStore)
+                if(poseMode === 'bord') {
+                    const coulissePos = document.getElementById('storeCoulissePos')?.value || 'aucune';
+                    const coulisseWidth = parseFloat(document.getElementById('storeCoulisseWidth')?.value || 45);
+                    const jeuBordL = parseFloat(document.getElementById('storeBordJeuL')?.value || 0);
+                    const jeuBordH = parseFloat(document.getElementById('storeBordJeuH')?.value || 0);
+
+                    updatedStore.coulissePos = coulissePos;
+                    updatedStore.coulisseWidth = coulisseWidth;
+                    updatedStore.jeuBordL = jeuBordL;
+                    updatedStore.jeuBordH = jeuBordH;
+
+                    let largeurScreenMm = largeurAvecMontant + jeuBordL;
+                    let largeurTotale = largeurScreenMm;
+
+                    if(coulissePos === 'G' || coulissePos === 'D') {
+                        largeurTotale += coulisseWidth;
+                    } else if(coulissePos === 'G+D') {
+                        largeurTotale += coulisseWidth * 2;
+                    }
+
+                    updatedStore.largeurFinie = (largeurTotale / 10).toFixed(1);
+
+                    // Caisson
+                    const product = updatedStore.productRef || data.productRef || '';
+                    let caissonH = 90;
+                    if(product.includes('Smart 85')) caissonH = 90;
+                    else if(product.includes('Smart 100')) caissonH = 105;
+                    else if(product.includes('Smart 130')) caissonH = 130;
+                    else if(product.includes('Smart 150')) caissonH = 150;
+
+                    updatedStore.caissonHeight = caissonH;
+                    updatedStore.hauteurFinie = ((h + jeuBordH + caissonH) / 10).toFixed(1);
+                } else {
+                    // Dans le trou
+                    const jl = parseFloat(document.getElementById('storeJeuL')?.value || 0);
+                    const jh = parseFloat(document.getElementById('storeJeuH')?.value || 0);
+
+                    updatedStore.jeuL = jl;
+                    updatedStore.jeuH = jh;
+                    updatedStore.largeurFinie = ((largeurAvecMontant - jl) / 10).toFixed(1);
+                    updatedStore.hauteurFinie = ((h - jh) / 10).toFixed(1);
+                }
+                
+                // Remplacer le store
+                stores[index] = updatedStore;
+                
+                // Nettoyer
+                delete data.editingStoreIndex;
+                storePhotos.newStore = [];
+                
+                // Retourner au récap
+                step = 12;
+                render();
+                
+                alert('✓ Store modifié!');
+            }
+        }
+        
+        function deleteStore(index) {
+            if(confirm('Supprimer ce store?')) {
+                stores.splice(index, 1);
+                render();
+            }
+        }
+
+        // SYSTÈME DE MÉMOIRE - localStorage
+        function saveProject() {
+            const projectName = prompt('Nom du projet:', data.clientName || 'Projet ' + new Date().toLocaleDateString());
+            if(!projectName) return;
+            
+            const project = {
+                name: projectName,
+                date: new Date().toISOString(),
+                data: data,
+                stores: stores,
+                storePhotos: storePhotos
+            };
+            
+            // Récupérer les projets existants
+            let projects = JSON.parse(localStorage.getItem('screenProjects') || '[]');
+            
+            // Ajouter le nouveau projet
+            projects.unshift(project); // Ajouter au début
+            
+            // Garder seulement les 20 derniers projets
+            if(projects.length > 20) projects = projects.slice(0, 20);
+            
+            localStorage.setItem('screenProjects', JSON.stringify(projects));
+            
+            alert('✓ Projet "' + projectName + '" sauvegardé!');
+        }
+        
+        function loadProjects() {
+            const projects = JSON.parse(localStorage.getItem('screenProjects') || '[]');
+            
+            if(projects.length === 0) {
+                alert('Aucun projet sauvegardé');
+                return;
+            }
+            
+            let html = `
+                <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center" onclick="this.remove()">
+                    <div style="background:white;padding:20px;border-radius:12px;max-width:500px;max-height:80vh;overflow-y:auto" onclick="event.stopPropagation()">
+                        <h2 style="margin-top:0">📂 Projets sauvegardés</h2>
+                        <div style="display:flex;flex-direction:column;gap:10px">
+            `;
+            
+            projects.forEach((p, i) => {
+                const date = new Date(p.date).toLocaleDateString('fr-BE');
+                html += `
+                    <div style="border:1px solid #ddd;padding:12px;border-radius:8px;cursor:pointer;transition:all 0.2s" 
+                         onmouseover="this.style.borderColor='var(--primary)'"
+                         onmouseout="this.style.borderColor='#ddd'"
+                         onclick="loadProject(${i})">
+                        <strong>${p.name}</strong><br>
+                        <small style="color:#666">${date} - ${(p.stores?.length || 0) + 1} store(s)</small>
+                        <button onclick="event.stopPropagation();deleteProject(${i})" 
+                                style="float:right;background:#dc3545;color:white;border:none;padding:4px 8px;border-radius:4px;cursor:pointer">
+                            Supprimer
+                        </button>
+                    </div>
+                `;
+            });
+            
+            html += `
+                        </div>
+                        <button onclick="this.parentElement.parentElement.remove()" 
+                                style="margin-top:20px;width:100%;padding:12px;background:var(--secondary);color:white;border:none;border-radius:8px;cursor:pointer">
+                            Fermer
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', html);
+        }
+        
+        function loadProject(index) {
+            const projects = JSON.parse(localStorage.getItem('screenProjects') || '[]');
+            const project = projects[index];
+            
+            if(!project) return;
+            
+            // Charger les données
+            data = project.data;
+            stores = project.stores || [];
+            storePhotos = project.storePhotos || {principal: []};
+            
+            // Fermer la modal
+            document.querySelector('[style*="position:fixed"]')?.remove();
+            
+            // Aller au récapitulatif
+            step = 12;
+            render();
+            
+            alert('✓ Projet "' + project.name + '" chargé!');
+        }
+        
+        function deleteProject(index) {
+            if(!confirm('Supprimer ce projet?')) return;
+            
+            let projects = JSON.parse(localStorage.getItem('screenProjects') || '[]');
+            projects.splice(index, 1);
+            localStorage.setItem('screenProjects', JSON.stringify(projects));
+            
+            // Recharger la liste
+            document.querySelector('[style*="position:fixed"]')?.remove();
+            loadProjects();
+        }
+
+        function save() {
+            ['productRef','roomName','clientName','clientAddress','largeur','largeurMontant','hauteur',
+             'jeuLargeur','jeuHauteur','moteur','sortieCable','couleur','autreRAL',
+             'toileType','toileRef','remarques','coulissePos',
+             'coulisseWidth','fleur','jeuBordLargeur','jeuBordHauteur'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    // Pour les champs numériques (jeux, dimensions), accepter les valeurs vides
+                    // Pour les autres, ne pas écraser avec du vide
+                    const isNumericField = ['largeur','largeurMontant','hauteur','jeuLargeur','jeuHauteur','jeuBordLargeur','jeuBordHauteur','coulisseWidth'].includes(id);
+                    if(isNumericField || el.value !== '') {
+                        data[id] = el.value;
+                    }
+                }
+            });
+
+            // Calculer largeurAvecMontant après avoir sauvegardé largeur et largeurMontant
+            if(data.largeurMontant && parseFloat(data.largeurMontant) > 0) {
+                data.largeurAvecMontant = parseFloat(data.largeur || 0) + (parseFloat(data.largeurMontant) / 2);
+            } else {
+                data.largeurAvecMontant = parseFloat(data.largeur || 0);
+            }
+        }
+        
+
+
+        
+
+        function getCaissonHeight() {
+            const product = data.productRef || '';
+            if(product.includes('Smart 85')) return 90;
+            if(product.includes('Smart 100')) return 105;
+            if(product.includes('Smart 130')) return 130;
+            if(product.includes('Smart 150')) return 150;
+            return 90; // par défaut
+        }
+
+
+        
+
+
+        
+
+        function calcDims() {
+            // Utiliser largeurAvecMontant si présent, sinon largeur normale
+            const l = parseFloat(data.largeurAvecMontant || data.largeur); // en mm
+            const h = parseFloat(data.hauteur); // en mm
+
+            let largeurFinale, hauteurFinale;
+            
+            if(data.poseMode === 'bord') {
+                // HORS BAIE : AJOUTER les jeux et le caisson
+                const jlBord = parseFloat(data.jeuBordLargeur||0); // en mm
+                const jhBord = parseFloat(data.jeuBordHauteur||0); // en mm
+                const caissonHeight = getCaissonHeight();
+                const coulisseWidth = parseFloat(data.coulisseWidth||0); // largeur d'une coulisse en mm
+                const coulissePos = data.coulissePos || 'aucune';
+                
+                // Largeur finale = largeur screen + jeu + largeur coulisse(s)
+                let largeurScreen = l + jlBord;
+                
+                // Ajouter la largeur des coulisses selon la position
+                if(coulissePos === 'G' || coulissePos === 'D') {
+                    largeurScreen += coulisseWidth; // 1 coulisse
+                } else if(coulissePos === 'G+D') {
+                    largeurScreen += coulisseWidth * 2; // 2 coulisses
+                }
+                
+                largeurFinale = largeurScreen;
+                hauteurFinale = h + jhBord + caissonHeight;
+                data.caissonHeight = caissonHeight;
+            } else {
+                // DANS LE TROU : DÉDUIRE les jeux
+                const jl = parseFloat(data.jeuLargeur||0); // en mm
+                const jh = parseFloat(data.jeuHauteur||0); // en mm
+
+                largeurFinale = l - jl;
+                hauteurFinale = h - jh;
+            }
+            
+            // Résultats en cm pour l'affichage
+            data.largeurFinie = (largeurFinale/10).toFixed(1);
+            data.hauteurFinie = (hauteurFinale/10).toFixed(1);
+        }
+        
+        function getAccessoiresLabels() {
+            return {
+                tele1: 'Télécommande 1 canal',
+                tele5: 'Télécommande 5 canaux',
+                inter1: 'Interrupteur télécommande 1 canal',
+                inter5: 'Interrupteur 5 canaux',
+                soleil: 'Capteur de soleil',
+                vent: 'Capteur de vent',
+                tahoma: 'Tahoma'
+            };
+        }
+
+        function getAccessoiresList() {
+            if(!data.accessoires) return [];
+            const labels = getAccessoiresLabels();
+            return Object.keys(data.accessoires)
+                .filter(k => data.accessoires[k] > 0)
+                .map(k => ({label: labels[k]||k, qty: data.accessoires[k]}));
+        }
+
+        function getSummary() {
+            const accItems = getAccessoiresList();
+            return `
+                <div class="summary-section">
+                    <h3>👤 Client</h3>
+                    <div class="summary-row"><span class="summary-label">Nom</span><span class="summary-value">${data.clientName||'-'}</span></div>
+                    ${data.clientAddress?`<div class="summary-row"><span class="summary-label">Adresse</span><span class="summary-value">${data.clientAddress}</span></div>`:''}
+                </div>
+                <div class="summary-section">
+                    <h3>📦 Produit</h3>
+                    <div class="summary-row"><span class="summary-label">Référence</span><span class="summary-value">${data.productRef||'-'}</span></div>
+                </div>
+                <div class="summary-section">
+                    <h3>⚙️ Motorisation</h3>
+                    <div class="summary-row"><span class="summary-label">Moteur</span><span class="summary-value">${data.moteur||"-"}</span></div>
+                    <div class="summary-row"><span class="summary-label">Sortie</span><span class="summary-value">${data.sortieCable||"-"}</span></div>
+                </div>
+                <div class="summary-section">
+                    <h3>🎨 Finitions</h3>
+                    <div class="summary-row"><span class="summary-label">Couleur</span><span class="summary-value">${data.couleur||"-"}${data.autreRAL?' ('+data.autreRAL+')':''}</span></div>
+                    <div class="summary-row"><span class="summary-label">Toile</span><span class="summary-value">${data.toileType||"-"}</span></div>
+                </div>
+                ${accItems.length>0?`
+                <div class="summary-section">
+                    <h3>🎛️ Accessoires</h3>
+                    ${accItems.map(a=>`<div class="summary-row"><span class="summary-label">${a.label}</span><span class="summary-value">× ${a.qty}</span></div>`).join('')}
+                </div>
+                `:''}
+            `;
+        }
+        
+
+        function addPhotosToStore(e, storeId) {
+            const files = e.target.files;
+            if(!storePhotos[storeId]) storePhotos[storeId] = [];
+            
+            let filesProcessed = 0;
+            for(let file of files) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    storePhotos[storeId].push({
+                        name: file.name,
+                        data: event.target.result
+                    });
+                    filesProcessed++;
+                    if(filesProcessed === files.length) {
+                        // Toutes les photos chargées, re-render
+                        render();
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        
+        
+        function deleteStorePhoto(storeId, index) {
+            if(storePhotos[storeId]) {
+                storePhotos[storeId].splice(index, 1);
+            }
+            render();
+        }
+
+        function addStore() {
+            const room = document.getElementById('storeRoom')?.value || '';
+            const poseMode = document.getElementById('storePoseMode')?.value || '';
+            const l = parseFloat(document.getElementById('storeLarg')?.value || 0);
+            const montant = parseFloat(document.getElementById('storeLargMontant')?.value || 0);
+            let largeurAvecMontant = l;
+            if(montant > 0) {
+                largeurAvecMontant = l + (montant / 2);
+            }
+            const h = parseFloat(document.getElementById('storeHaut')?.value || 0);
+            const sortie = document.getElementById('storeSortie')?.value || '';
+            const qty = parseInt(document.getElementById('storeQty')?.value || 1);
+            const productRef = document.getElementById('storeProductRef')?.value || '';
+            
+            if(!room || !poseMode || !l || !h || !sortie) {
+                alert('Tous les champs obligatoires doivent être remplis');
+                return;
+            }
+            
+            const newStore = {
+                roomName: room,
+                poseMode: poseMode,
+                largeurMesuree: l,
+                largeurMontant: montant,
+                largeurAvecMontant: largeurAvecMontant,
+                hauteurMesuree: h,
+                sortieCable: sortie,
+                qty: qty,
+                productRef: productRef || data.productRef,
+                photos: storePhotos.newStore || [],
+                comments: document.getElementById('storeComment')?.value || ''
+            };
+            
+            // Calculer les dimensions finales
+            if(poseMode === 'bord') {
+                // HORS BAIE
+                const coulissePos = document.getElementById('storeCoulissePos')?.value || 'aucune';
+                const coulisseWidth = parseFloat(document.getElementById('storeCoulisseWidth')?.value || 45);
+                const jeuBordL = parseFloat(document.getElementById('storeBordJeuL')?.value || 0);
+                const jeuBordH = parseFloat(document.getElementById('storeBordJeuH')?.value || 0);
+                
+                newStore.coulissePos = coulissePos;
+                newStore.coulisseWidth = coulisseWidth;
+                newStore.jeuBordL = jeuBordL;
+                newStore.jeuBordH = jeuBordH;
+                
+                let largeurScreenMm = largeurAvecMontant + jeuBordL;
+                let largeurTotale = largeurScreenMm;
+                
+                if(coulissePos === 'G' || coulissePos === 'D') {
+                    largeurTotale += coulisseWidth;
+                } else if(coulissePos === 'G+D') {
+                    largeurTotale += coulisseWidth * 2;
+                }
+                
+                newStore.largeurFinie = (largeurTotale / 10).toFixed(1);
+                
+                // Caisson
+                const product = newStore.productRef || data.productRef || '';
+                let caissonHeight = 90;
+                if(product.includes('Smart 85')) caissonHeight = 90;
+                else if(product.includes('Smart 100')) caissonHeight = 105;
+                else if(product.includes('Smart 130')) caissonHeight = 130;
+                else if(product.includes('Smart 150')) caissonHeight = 150;
+                
+                newStore.caissonHeight = caissonHeight;
+                newStore.hauteurFinie = ((h + jeuBordH + caissonHeight) / 10).toFixed(1);
+                
+            } else {
+                // DANS LE TROU
+                const jl = parseFloat(document.getElementById('storeJeuL')?.value || 0);
+                const jh = parseFloat(document.getElementById('storeJeuH')?.value || 0);
+                
+                newStore.jeuL = jl;
+                newStore.jeuH = jh;
+                newStore.largeurFinie = ((largeurAvecMontant - jl) / 10).toFixed(1);
+                newStore.hauteurFinie = ((h - jh) / 10).toFixed(1);
+            }
+            
+            // Générer notation
+            newStore.notation = newStore.largeurFinie;
+            if(newStore.coulissePos === 'G') newStore.notation += ' + G';
+            else if(newStore.coulissePos === 'D') newStore.notation += ' + D';
+            else if(newStore.coulissePos === 'G+D') newStore.notation += ' + G+D';
+            
+            // Ajouter à la liste
+            stores.push(newStore);
+            
+            // Réinitialiser
+            storePhotos.newStore = [];
+            document.getElementById('storeRoom').value = '';
+            document.getElementById('storeProductRef').value = '';
+            document.getElementById('storePoseMode').value = '';
+            document.getElementById('storeLarg').value = '';
+            document.getElementById('storeHaut').value = '';
+            document.getElementById('storeSortie').value = '';
+            document.getElementById('storeQty').value = '1';
+            if(document.getElementById('storeComment')) {
+                document.getElementById('storeComment').value = '';
+            }
+            
+            // Retourner au récapitulatif
+            step = 12;
+            render();
+            
+            alert('✓ Store ajouté!');
+        }
+        
+        function addPhotos(e) {
+            Array.from(e.target.files).forEach(f => {
+                const r = new FileReader();
+                r.onload = ev => {
+                    photos.push({name:f.name, data:ev.target.result});
+                    renderPhotos();
+                };
+                r.readAsDataURL(f);
+            });
+        }
+        
+        function renderPhotos() {
+            const div = document.getElementById('photoPreview');
+            if(div) div.innerHTML = photos.map((p,i)=>`
+                <div class="photo-item">
+                    <img src="${p.data}">
+                    <button class="photo-remove" onclick="photos.splice(${i},1);renderPhotos()">×</button>
+                </div>
+            `).join('');
+        }
+        
+        function exportTxt() {
+            const txt = generateReport();
+            navigator.clipboard.writeText(txt).then(()=>alert('✓ Copié!'));
+        }
+        
+        function downloadTxt() {
+            const txt = generateReport();
+            const blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `Releve_${data.roomName}_${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+        }
+        
+
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            let y = 20;
+            const lineHeight = 7;
+            const pageHeight = 280;
+            
+            // Titre
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.text('RELEVÉ SCREEN', 105, y, { align: 'center' });
+            y += 10;
+            
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'normal');
+            doc.text('Date: ' + new Date().toLocaleDateString('fr-BE'), 20, y);
+            y += 10;
+            
+            // CLIENT
+            doc.setFont(undefined, 'bold');
+            doc.text('CLIENT', 20, y);
+            y += lineHeight;
+            doc.setFont(undefined, 'normal');
+            doc.text('Nom: ' + (data.clientName||'-'), 20, y);
+            y += lineHeight;
+            if(data.clientAddress) {
+                doc.text('Adresse: ' + data.clientAddress, 20, y);
+                y += lineHeight;
+            }
+            y += 5;
+            
+            // PRODUIT
+            doc.setFont(undefined, 'bold');
+            doc.text('PRODUIT', 20, y);
+            y += lineHeight;
+            doc.setFont(undefined, 'normal');
+            doc.text('Référence: ' + (data.productRef||'-'), 20, y);
+            y += 10;
+            
+            // STORE PRINCIPAL
+            doc.setFont(undefined, 'bold');
+            doc.text('STORE 1: ' + (data.roomName||'Principal'), 20, y);
+            y += lineHeight;
+            doc.setFont(undefined, 'normal');
+            
+            // Dimensions
+            doc.text('Mode: ' + (data.poseMode==='dans'?'Dans le trou':'Sur le jour'), 20, y);
+            y += lineHeight;
+            doc.text('Largeur: ' + (data.largeurFinie||'-') + ' cm', 20, y);
+            y += lineHeight;
+            doc.text('Hauteur: ' + (data.hauteurFinie||'-') + ' cm', 20, y);
+            y += lineHeight;
+            doc.text('Sortie câble: ' + (data.sortieCable||'-'), 20, y);
+            y += lineHeight;
+            doc.text('Quantité: ' + (data.qty||1), 20, y);
+            y += lineHeight;
+            
+            // Commentaires store principal
+            if(data.storeComments) {
+                doc.setFont(undefined, 'italic');
+                const lines = doc.splitTextToSize('Commentaires: ' + data.storeComments, 170);
+                lines.forEach(line => {
+                    if(y > pageHeight) { doc.addPage(); y = 20; }
+                    doc.text(line, 20, y);
+                    y += lineHeight;
+                });
+                doc.setFont(undefined, 'normal');
+            }
+            
+            // Photos store principal
+            if(data.photos && data.photos.length > 0) {
+                y += 5;
+                doc.setFont(undefined, 'bold');
+                doc.text('Photos:', 20, y);
+                y += lineHeight;
+                doc.setFont(undefined, 'normal');
+                
+                for(let i = 0; i < data.photos.length; i++) {
+                    if(y > pageHeight - 60) { doc.addPage(); y = 20; }
+                    try {
+                        doc.addImage(data.photos[i].data, 'JPEG', 20, y, 80, 60);
+                        doc.text(data.photos[i].name, 105, y + 5, { maxWidth: 85 });
+                        y += 65;
+                    } catch(e) {
+                        doc.text('Photo ' + (i+1) + ': ' + data.photos[i].name, 20, y);
+                        y += lineHeight;
+                    }
+                }
+            }
+            
+            y += 10;
+            
+            // STORES SUPPLÉMENTAIRES
+            stores.forEach((s, i) => {
+                if(y > pageHeight - 40) { doc.addPage(); y = 20; }
+                
+                doc.setFont(undefined, 'bold');
+                doc.text('STORE ' + (i+2) + ': ' + (s.roomName||'Store'), 20, y);
+                y += lineHeight;
+                doc.setFont(undefined, 'normal');
+                
+                if(s.productRef && s.productRef !== data.productRef) {
+                    doc.text('Référence: ' + s.productRef, 20, y);
+                    y += lineHeight;
+                }
+                
+                doc.text('Mode: ' + (s.poseMode==='dans'?'Dans le trou':'Sur le jour'), 20, y);
+                y += lineHeight;
+                doc.text('Largeur: ' + (s.largeurFinie||'-') + ' cm', 20, y);
+                y += lineHeight;
+                doc.text('Hauteur: ' + (s.hauteurFinie||'-') + ' cm', 20, y);
+                y += lineHeight;
+                doc.text('Sortie câble: ' + (s.sortieCable||'-'), 20, y);
+                y += lineHeight;
+                doc.text('Quantité: ' + (s.qty||1), 20, y);
+                y += lineHeight;
+                
+                // Commentaires
+                if(s.comments) {
+                    doc.setFont(undefined, 'italic');
+                    const lines = doc.splitTextToSize('Commentaires: ' + s.comments, 170);
+                    lines.forEach(line => {
+                        if(y > pageHeight) { doc.addPage(); y = 20; }
+                        doc.text(line, 20, y);
+                        y += lineHeight;
+                    });
+                    doc.setFont(undefined, 'normal');
+                }
+                
+                // Photos
+                if(s.photos && s.photos.length > 0) {
+                    y += 5;
+                    doc.setFont(undefined, 'bold');
+                    doc.text('Photos:', 20, y);
+                    y += lineHeight;
+                    doc.setFont(undefined, 'normal');
+                    
+                    for(let j = 0; j < s.photos.length; j++) {
+                        if(y > pageHeight - 60) { doc.addPage(); y = 20; }
+                        try {
+                            doc.addImage(s.photos[j].data, 'JPEG', 20, y, 80, 60);
+                            doc.text(s.photos[j].name, 105, y + 5, { maxWidth: 85 });
+                            y += 65;
+                        } catch(e) {
+                            doc.text('Photo ' + (j+1) + ': ' + s.photos[j].name, 20, y);
+                            y += lineHeight;
+                        }
+                    }
+                }
+                
+                y += 10;
+            });
+            
+            // MOTORISATION & FINITIONS
+            if(y > pageHeight - 40) { doc.addPage(); y = 20; }
+            
+            doc.setFont(undefined, 'bold');
+            doc.text('MOTORISATION', 20, y);
+            y += lineHeight;
+            doc.setFont(undefined, 'normal');
+            doc.text('Moteur: ' + (data.moteur||'-'), 20, y);
+            y += 10;
+            
+            doc.setFont(undefined, 'bold');
+            doc.text('FINITIONS', 20, y);
+            y += lineHeight;
+            doc.setFont(undefined, 'normal');
+            doc.text('Couleur: ' + (data.couleur||'-') + (data.autreRAL?' ('+data.autreRAL+')':''), 20, y);
+            y += lineHeight;
+            doc.text('Toile: ' + (data.toileType||'-'), 20, y);
+            y += lineHeight;
+            
+            const accItems = getAccessoiresList();
+            if(accItems.length > 0) {
+                y += 5;
+                if(y > pageHeight - 40) { doc.addPage(); y = 20; }
+                doc.setFont(undefined, 'bold');
+                doc.text('ACCESSOIRES', 20, y);
+                y += lineHeight;
+                doc.setFont(undefined, 'normal');
+                accItems.forEach(a => {
+                    if(y > pageHeight) { doc.addPage(); y = 20; }
+                    doc.text(a.label + ': x' + a.qty, 20, y);
+                    y += lineHeight;
+                });
+            }
+
+            // Télécharger
+            const filename = 'Releve-Screen-' + (data.clientName||'Client').replace(/[^a-z0-9]/gi, '_') + '.pdf';
+            doc.save(filename);
+        }
+
+        function generateReport() {
+            let txt = `=== RELEVÉ SCREEN ===
+
+Date: ${new Date().toLocaleDateString('fr-BE')}
+
+`;
+            txt += `CLIENT: ${data.clientName||'-'}
+ADRESSE: ${data.clientAddress||'-'}
+
+`;
+            txt += `--- PRODUIT ---
+Référence: ${data.productRef}
+
+`;
+            
+            // STORE PRINCIPAL avec détails complets
+            txt += `--- STORE 1: ${data.roomName||'Principal'} ---
+`;
+            txt += `Mode: ${data.poseMode==='dans'?'Dans le trou':'Sur le jour'}
+`;
+            
+            // Détails des mesures
+            if(data.largeurMontant && parseFloat(data.largeurMontant)>0) {
+                txt += `Mesures brutes: ${data.largeur}mm + (${data.largeurMontant}mm montant ÷ 2)
+`;
+            }
+            
+            // Dimensions finales avec détails
+            if(data.poseMode === 'bord') {
+                txt += `Largeur: ${data.largeurFinie} cm (jeu: ${data.jeuBordLargeur||0}mm, coulisse: ${data.coulissePos||'aucune'})
+`;
+                txt += `Hauteur: ${data.hauteurFinie} cm (jeu: ${data.jeuBordHauteur||0}mm, caisson: ${data.caissonHeight||90}mm)
+`;
+            } else {
+                txt += `Largeur: ${data.largeurFinie} cm (jeu: ${data.jeuLargeur||5}mm)
+`;
+                txt += `Hauteur: ${data.hauteurFinie} cm (jeu: ${data.jeuHauteur||5}mm)
+`;
+            }
+            
+            if(data.notation) txt += `Notation: ${data.notation}
+`;
+            txt += `Sortie câble: ${data.sortieCable||'-'}
+`;
+            txt += `Quantité: ${data.qty||1}
+`;
+            if(data.photos && data.photos.length>0) txt += `Photos: ${data.photos.length} photo(s)
+`;
+            if(data.storeComments) txt += `Commentaires: ${data.storeComments}
+`;
+            
+            // STORES SUPPLÉMENTAIRES
+            stores.forEach((s,i)=>{
+                txt += `
+--- STORE ${i+2}: ${s.roomName} ---
+`;
+                if(s.productRef && s.productRef !== data.productRef) {
+                    txt += `Référence: ${s.productRef}
+`;
+                }
+                txt += `Mode: ${s.poseMode==='dans'?'Dans le trou':'Sur le jour'}
+`;
+                
+                // Dimensions avec détails
+                if(s.poseMode === 'bord') {
+                    txt += `Largeur: ${s.largeurFinie} cm (jeu: ${s.jeuBordL||0}mm, coulisse: ${s.coulissePos||'aucune'})
+`;
+                    txt += `Hauteur: ${s.hauteurFinie} cm (jeu: ${s.jeuBordH||0}mm, caisson: ${s.caissonHeight||90}mm)
+`;
+                } else {
+                    txt += `Largeur: ${s.largeurFinie} cm (jeu: ${s.jeuL||5}mm)
+`;
+                    txt += `Hauteur: ${s.hauteurFinie} cm (jeu: ${s.jeuH||5}mm)
+`;
+                }
+                
+                if(s.notation) txt += `Notation: ${s.notation}
+`;
+                txt += `Sortie câble: ${s.sortieCable||'-'}
+`;
+                txt += `Quantité: ${s.qty||1}
+`;
+                if(s.photos && s.photos.length>0) txt += `Photos: ${s.photos.length} photo(s)
+`;
+                if(s.comments) txt += `Commentaires: ${s.comments}
+`;
+            });
+            
+            txt += `
+--- MOTORISATION ---
+Moteur: ${data.moteur||'-'}
+`;
+            txt += `
+--- FINITIONS ---
+Couleur: ${data.couleur||'-'}`;
+            if(data.autreRAL) txt += ` (${data.autreRAL})`;
+            txt += `
+Toile: ${data.toileType||'-'}
+`;
+            if(data.toileRef) txt += `Référence toile: ${data.toileRef}
+`;
+            
+            const accTxt = getAccessoiresList();
+            if(accTxt.length > 0) {
+                txt += `
+--- ACCESSOIRES ---
+`;
+                accTxt.forEach(a => {
+                    txt += `${a.label}: x${a.qty}
+`;
+                });
+            }
+            
+if(photos.length>0) txt += `
+--- PHOTOS ---
+${photos.length} photo(s) jointe(s)
+`;
+
+            txt += `
+=== FIN ===`;
+            return txt;
+        }
+        
+        function reset() {
+            if(confirm('Nouveau relevé ?')) {
+                data={};photos=[];stores=[];storePhotos={principal:[],newStore:[]};step=1;render();
+            }
+        }
+        
+
+        
+        function attachStepListeners() {
+            // Attacher les listeners après le render
+            
+            // Étape 8 - Couleur
+            const couleurSelect = document.getElementById('couleur');
+            if(couleurSelect) {
+                couleurSelect.addEventListener('change', function() {
+                    data.couleur = this.value;
+                    render();
+                });
+            }
+            
+            // Étape 12 - Nouveau store
+            const coulisseSelect = document.getElementById('storeCoulissePos');
+            if(coulisseSelect) {
+                coulisseSelect.addEventListener('change', function() {
+                    data.storeCoulissePos = this.value;
+                    render();
+                });
+            }
+            
+            const widthSelect = document.getElementById('storeCoulisseWidth');
+            if(widthSelect) {
+                widthSelect.addEventListener('change', function() {
+                    data.storeCoulisseWidth = this.value;
+                    render();
+                });
+            }
+            
+            const modeSelect = document.getElementById('storePoseMode');
+            if(modeSelect) {
+                modeSelect.addEventListener('change', function() {
+                    data.storePoseMode = this.value;
+                    render();
+                });
+            }
+            
+            // Étape 3.5 - Coulisses principal
+            const coulissePosMain = document.getElementById('coulissePos');
+            if(coulissePosMain) {
+                coulissePosMain.addEventListener('change', function() {
+                    data.coulissePos = this.value;
+                    render();
+                });
+            }
+            
+            const coulisseTypeMain = document.getElementById('coulisseType');
+            if(coulisseTypeMain) {
+                coulisseTypeMain.addEventListener('change', function() {
+                    data.coulisseWidth = this.value;
+                    render();
+                });
+            }
+            
+            const fleurSelect = document.getElementById('fleur');
+            if(fleurSelect) {
+                fleurSelect.addEventListener('change', function() {
+                    data.fleur = this.value;
+                    render();
+                });
+            }
+        }
+
+        render();
+
+        function addStorePhotos(e) {
+            if(!storePhotos.newStore) storePhotos.newStore = [];
+            Array.from(e.target.files).forEach(f => {
+                const r = new FileReader();
+                r.onload = ev => {
+                    storePhotos.newStore.push({name:f.name, data:ev.target.result});
+                    renderStorePhotos();
+                };
+                r.readAsDataURL(f);
+            });
+        }
+
+        function renderStorePhotos() {
+            const div = document.getElementById('storePhotoPreview');
+            const photos = storePhotos.newStore || [];
+            if(div) div.innerHTML = photos.map((p,i)=>`
+                <div class="photo-item">
+                    <img src="${p.data}">
+                    <button class="photo-remove" onclick="storePhotos.newStore.splice(${i},1);renderStorePhotos()">×</button>
+                </div>
+            `).join('');
+        }
+
+</script>
+</body>
+</html>
